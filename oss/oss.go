@@ -10,8 +10,11 @@
 package oss
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/common"
-	"Aliyun-OSS-Go-SDK/oss/types"
+	// "Aliyun-OSS-Go-SDK/oss/common"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/common"
+	// "Aliyun-OSS-Go-SDK/oss/types"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/types"
+
 	"errors"
 	"net/http"
 )

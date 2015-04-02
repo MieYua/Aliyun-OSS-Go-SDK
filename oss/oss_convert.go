@@ -16,9 +16,7 @@ import (
 	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/service"
 )
 
-/*
- *	Convert this Client type into bucket's.
- */
+//	Convert this Client type into bucket's.
 func ConvertClientBucket(c *Client) *bucket.Client {
 	bc := bucket.Client{
 		Host:            c.Host,
@@ -30,9 +28,7 @@ func ConvertClientBucket(c *Client) *bucket.Client {
 	return &bc
 }
 
-/*
- *	Convert this Client type into multipart's.
- */
+//	Convert this Client type into multipart's.
 func ConvertClientMultipart(c *Client) *multipart.Client {
 	mc := multipart.Client{
 		Host:            c.Host,
@@ -44,9 +40,7 @@ func ConvertClientMultipart(c *Client) *multipart.Client {
 	return &mc
 }
 
-/*
- *	Convert this Client type into object's.
- */
+//	Convert this Client type into object's.
 func ConvertClientObject(c *Client) *object.Client {
 	oc := object.Client{
 		Host:            c.Host,
@@ -58,9 +52,7 @@ func ConvertClientObject(c *Client) *object.Client {
 	return &oc
 }
 
-/*
- *	Convert this Client type into service's.
- */
+//	Convert this Client type into service's.
 func ConvertClientService(c *Client) *service.Client {
 	sc := service.Client{
 		Host:            c.Host,

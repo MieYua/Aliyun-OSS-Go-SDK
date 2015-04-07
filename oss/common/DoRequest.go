@@ -39,9 +39,8 @@ func (c *Client) DoRequest(method, path, canonicalizedResource string, params ma
 
 	c.SignHeader(req, canonicalizedResource)
 
-	//fmt.Println(req)
 	resp, err = c.HttpClient.Do(req)
-	//fmt.Println(resp)
+
 	if method == "POST" {
 		resp.Header.Set(consts.HH_AUTHORIZATION, req.Header.Get(consts.HH_AUTHORIZATION))
 	}

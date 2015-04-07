@@ -33,8 +33,10 @@ func (c *Client) GetService() (lambr types.ListAllMyBucketsResult, err error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
+		e := types.Error{}
+		xml.Unmarshal(body, &e)
+		err = errors.New(resp.Status + " - " + e.Code)
+		//fmt.Println(string(body))
 		return
 	}
 

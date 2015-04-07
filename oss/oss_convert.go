@@ -7,13 +7,13 @@ package oss
 
 import (
 	// "Aliyun-OSS-Go-SDK/oss/model/bucket"
-	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/bucket"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/bucket"
 	// "Aliyun-OSS-Go-SDK/oss/model/multipart"
-	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/multipart"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/multipart"
 	// "Aliyun-OSS-Go-SDK/oss/model/object"
-	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/object"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/object"
 	// "Aliyun-OSS-Go-SDK/oss/model/service"
-	"github.com/MieYua/Aliyun-OSS-Go-SDK-v2/oss/service"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/service"
 )
 
 //	Convert this Client type into bucket's.

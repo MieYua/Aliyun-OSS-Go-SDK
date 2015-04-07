@@ -6,11 +6,11 @@
 package multipart
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/consts"
-	"Aliyun-OSS-Go-SDK/oss/types"
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io"
 	"io/ioutil"
 	"os"

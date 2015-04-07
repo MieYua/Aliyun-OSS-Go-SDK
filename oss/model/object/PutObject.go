@@ -6,10 +6,10 @@
 package object
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/consts"
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
 	"io/ioutil"
 	"net/http"

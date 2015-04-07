@@ -6,14 +6,14 @@
 package object
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/consts"
-	"Aliyun-OSS-Go-SDK/oss/types"
 	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 )
 

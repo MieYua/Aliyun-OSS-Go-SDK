@@ -6,8 +6,8 @@
 package common
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/types"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"net/http"
 )
 

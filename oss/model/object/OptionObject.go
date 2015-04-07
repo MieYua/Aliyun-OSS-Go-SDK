@@ -6,9 +6,9 @@
 package object
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/consts"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io/ioutil"
 )
 

@@ -6,11 +6,11 @@
 package common
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/types"
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/base64"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"hash"
 	"io"
 	"net/http"

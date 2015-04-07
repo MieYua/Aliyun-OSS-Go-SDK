@@ -6,10 +6,10 @@
 package service
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/types"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 )
 

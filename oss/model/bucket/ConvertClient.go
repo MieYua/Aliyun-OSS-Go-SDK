@@ -6,8 +6,8 @@
 package bucket
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/common"
-	"Aliyun-OSS-Go-SDK/oss/types"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 )
 
 //	Import types.Client.

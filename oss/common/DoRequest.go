@@ -6,7 +6,7 @@
 package common
 
 import (
-	"Aliyun-OSS-Go-SDK/oss/consts"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
 	"net/http"
 	"strconv"

@@ -19,7 +19,7 @@ import (
  *	err := c.AbortMultipartUpload(initObjectPath, imur1.UploadId)
  */
 func (c *Client) AbortMultipartUpload(objectPath, uploadId string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

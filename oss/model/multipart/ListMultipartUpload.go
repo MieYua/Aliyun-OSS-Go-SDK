@@ -21,7 +21,7 @@ import (
  *	If you want to search all results, second parameter is nil.
  */
 func (c *Client) ListMultipartUpload(bucketName string, params map[string]string) (lmur types.ListMultipartUploadResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(bucketName, "/") == false {
 		bucketName = "/" + bucketName

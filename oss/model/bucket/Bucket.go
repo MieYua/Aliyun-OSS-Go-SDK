@@ -10,6 +10,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
@@ -17,25 +18,33 @@ import (
 	"strings"
 )
 
+//	Import common.Client.
+/*
+ *
+ */
+type Client struct {
+	CClient *common.Client
+}
+
 // 	Bucket: Create a new bucket.
 /*
  *	Example:
  *	err := PutBucket(bucketName)
  */
 func (c *Client) PutBucket(bucketName string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName
 
 	bxml := types.BucketXML{}
 
 	// Get the correct region
-	if strings.HasPrefix(c.Host, "-internal.aliyuncs.com") {
+	if strings.HasPrefix(c.CClient.TClient.Host, "-internal.aliyuncs.com") {
 		urlSuffixInternal := "-internal.aliyuncs.com"
-		bxml.LocationConstraint = strings.TrimSuffix(c.Host, urlSuffixInternal)
+		bxml.LocationConstraint = strings.TrimSuffix(c.CClient.TClient.Host, urlSuffixInternal)
 	} else {
 		urlSuffix := ".aliyuncs.com"
-		bxml.LocationConstraint = strings.TrimSuffix(c.Host, urlSuffix)
+		bxml.LocationConstraint = strings.TrimSuffix(c.CClient.TClient.Host, urlSuffix)
 	}
 
 	b, err := xml.Marshal(bxml)

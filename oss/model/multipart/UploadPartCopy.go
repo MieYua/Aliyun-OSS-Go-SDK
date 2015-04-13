@@ -34,7 +34,7 @@ import (
  *	If file size is smaller than 1GB, please use function CopyObject.
  */
 func (c *Client) UploadPartCopy(imur types.InitiateMultipartUploadResult, initObjectPath, copySrc string, cmu types.CompleteMultipartUpload, startPoint, cutLength, length int64, partNumber int) (isLastPart bool, endPoint int64, cpr types.CopyPartResult, cmuNew types.CompleteMultipartUpload, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(copySrc, "/") == false {
 		copySrc = "/" + copySrc

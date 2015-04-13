@@ -19,7 +19,7 @@ import (
  *	lc,err := GetBucketLocation(bucketName)
  */
 func (c *Client) GetBucketLocation(bucketName string) (lc types.LocationConstraint, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?location"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

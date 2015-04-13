@@ -9,9 +9,18 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 )
+
+//	Import common.Client.
+/*
+ *
+ */
+type Client struct {
+	CClient *common.Client
+}
 
 // 	Get service's details.
 /*
@@ -23,7 +32,7 @@ import (
  *				}
  */
 func (c *Client) GetService() (lambr types.ListAllMyBucketsResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 	resp, err := cc.DoRequest("GET", "/", "/", nil, nil)
 	if err != nil {
 		return

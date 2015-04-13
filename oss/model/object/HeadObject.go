@@ -20,7 +20,7 @@ import (
  *	--> map[Accept-Ranges:[bytes] Etag:["xxxxx"] Server:[AliyunOSS] Date:[xxxx GMT] Content-Type:[text/plain; charset=utf-8] Content-Length:[x] Last-Modified:[xxxx GMT] X-Oss-Request-Id:[xxxxxx]] <nil>
  */
 func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

@@ -20,7 +20,7 @@ import (
  *	err := PutBucketACL(bucketName, (consts)ACL)
  */
 func (c *Client) PutBucketACL(bucketName, acl string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	params := map[string]string{consts.OH_OSS_CANNED_ACL: acl}
 	reqStr := "/" + bucketName
@@ -45,7 +45,7 @@ func (c *Client) PutBucketACL(bucketName, acl string) (err error) {
  *	acl,err := GetBucketACL(bucketName)
  */
 func (c *Client) GetBucketACL(bucketName string) (acl types.AccessControlPolicy, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?acl"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

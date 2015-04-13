@@ -27,7 +27,7 @@ import (
  *	If cutLength is smaller than 102400, cutLength will be 102400
  */
 func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObjectPath, filePath string, cmu types.CompleteMultipartUpload, startPoint, cutLength int64, partNumber int) (isLastPart bool, endPoint int64, cmuNew types.CompleteMultipartUpload, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -89,7 +89,7 @@ func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObject
 	newPart.ETag = resp.Header.Get(consts.HH_ETAG)
 	newPart.PartNumber = partNumber
 	cmuNew.Part = append(cmu.Part, newPart)
-	fmt.Println("Partnumber " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been uploaded.")
+	fmt.Println("Part number " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been uploaded.")
 	return
 
 }

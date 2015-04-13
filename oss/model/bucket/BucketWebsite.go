@@ -25,7 +25,7 @@ import (
  *	And the type of documents is only accepted with ".html"
  */
 func (c *Client) PutBucketWebsite(bucketName, indexDocument, errorDocument string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?website"
 
@@ -75,7 +75,7 @@ func (c *Client) PutBucketWebsite(bucketName, indexDocument, errorDocument strin
  *	wc,err := c.GetBucketWebsite(bucketName)
  */
 func (c *Client) GetBucketWebsite(bucketName string) (wc types.WebsiteConfiguration, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?website"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

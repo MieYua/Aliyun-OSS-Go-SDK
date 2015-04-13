@@ -25,7 +25,7 @@ import (
  *	c.DeleteMultipleObject("bucketName", []string{"copy_test1.txt", "copy_test2.txt"})
  */
 func (c *Client) DeleteMultipleObject(bucketName string, keys []string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	dxml := types.DeleteXML{}
 

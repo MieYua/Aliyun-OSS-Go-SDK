@@ -10,10 +10,13 @@
 package oss
 
 import (
-	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
-	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
-
 	"errors"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/bucket"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/multipart"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/object"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/service"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"net/http"
 )
 
@@ -23,7 +26,12 @@ import (
 /*
  *
  */
-type Client common.Client
+type Client struct {
+	BClient *bucket.Client
+	MClient *multipart.Client
+	OClient *object.Client
+	SClient *service.Client
+}
 
 //	Client: InitiateClient.
 //	Initiate a new client.
@@ -34,13 +42,23 @@ type Client common.Client
  */
 func InitiateClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 	cc := common.NewClient(endPoint, accessKeyId, accessKeySecret)
+	bc := bucket.Client{}
+	mc := multipart.Client{}
+	oc := object.Client{}
+	sc := service.Client{}
+
+	bc.CClient = cc
+	mc.CClient = cc
+	oc.CClient = cc
+	sc.CClient = cc
+
 	c := Client{
-		Host:            cc.Host,
-		AccessKeyId:     cc.AccessKeyId,
-		AccessKeySecret: cc.AccessKeySecret,
-		HttpClient:      cc.HttpClient,
-		FileIOLocker:    cc.FileIOLocker,
+		BClient: &bc,
+		MClient: &mc,
+		OClient: &oc,
+		SClient: &sc,
 	}
+
 	return &c
 }
 
@@ -52,7 +70,7 @@ func InitiateClient(endPoint, accessKeyId, accessKeySecret string) *Client {
  *	lambr,err := c.GetServiceInfo()
  */
 func (c *Client) GetServiceInfo() (lambr types.ListAllMyBucketsResult, err error) {
-	sc := ConvertClientService(c)
+	sc := c.SClient
 	return sc.GetService()
 }
 
@@ -64,7 +82,7 @@ func (c *Client) GetServiceInfo() (lambr types.ListAllMyBucketsResult, err error
  *	err := c.CreateBucket(bucketName)
  */
 func (c *Client) CreateBucket(bucketName string) (err error) {
-	bc := ConvertClientBucket(c)
+	bc := c.BClient
 	return bc.PutBucket(bucketName)
 }
 
@@ -201,7 +219,7 @@ func (c *Client) DeleteBucket(bucketName, deleteName string) (err error) {
  *	maxkeys: The maximum of objects (default:"100")
  */
 func (c *Client) GetBucketInfo(bucketName, prefix, marker, delimiter, maxkeys string) (lbr types.ListBucketResult, err error) {
-	bc := ConvertClientBucket(c)
+	bc := c.BClient
 	return bc.GetBucket(bucketName, prefix, marker, delimiter, maxkeys)
 }
 
@@ -227,7 +245,7 @@ func (c *Client) GetBucketInfo(bucketName, prefix, marker, delimiter, maxkeys st
  *	corsRules = nil.
  */
 func (c *Client) SetBucket(bucketName, aclSetting string, loggingSetting, websiteSetting map[string]string, referers []string, rules []types.Rule, corsRules []types.CORSRule) (err error) {
-	bc := ConvertClientBucket(c)
+	bc := c.BClient
 	err = nil
 	if aclSetting != "" {
 		errACL := bc.PutBucketACL(bucketName, aclSetting)
@@ -290,7 +308,7 @@ func (c *Client) SetBucket(bucketName, aclSetting string, loggingSetting, websit
  *	corsc: 	CORSConfiguration
  */
 func (c *Client) GetBucketSetting(bucketName string) (acl types.AccessControlPolicy, lc types.LocationConstraint, bls types.BucketLoggingStatus, wc types.WebsiteConfiguration, rc types.RefererConfiguration, lfc types.LifecycleConfiguration, corsc types.CORSConfiguration, err error) {
-	bc := ConvertClientBucket(c)
+	bc := c.BClient
 	err = nil
 	acl, err = bc.GetBucketACL(bucketName)
 	if err != nil {
@@ -336,7 +354,7 @@ func (c *Client) GetBucketSetting(bucketName string) (acl types.AccessControlPol
  *	response will show 403 ERROR.
  */
 func (c *Client) OptionObject(objectPath, accessControlRequestMethod, accessControlRequestHeader, origin string) (err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	err = oc.OptionObject(objectPath, accessControlRequestMethod, accessControlRequestHeader, origin)
 	return
 }
@@ -352,7 +370,7 @@ func (c *Client) OptionObject(objectPath, accessControlRequestMethod, accessCont
  *			Can be names of filepacks(bucketName/filePack/../fileName).
  */
 func (c *Client) CreateObject(objectPath, filePath string) (err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	err = oc.PutObject(objectPath, filePath)
 	return
 }
@@ -369,7 +387,7 @@ func (c *Client) CreateObject(objectPath, filePath string) (err error) {
  *	If file size is larger than 1GB, please use function UploadPartCopy
  */
 func (c *Client) CopyObject(pasteSrc, copySrc string) (cor types.CopyObjectResult, err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	cor, err = oc.CopyObject(pasteSrc, copySrc)
 	return
 }
@@ -387,7 +405,7 @@ func (c *Client) CopyObject(pasteSrc, copySrc string) (cor types.CopyObjectResul
  *	fmt.Println(string(obytes[:]), err)-->test <nil>
  */
 func (c *Client) GetObject(objectPath string, rangeStart, rangeEnd int) (obytes []byte, err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	obytes, err = oc.GetObject(objectPath, rangeStart, rangeEnd)
 	return
 }
@@ -409,7 +427,7 @@ func (c *Client) GetObject(objectPath string, rangeStart, rangeEnd int) (obytes 
  *		c.DeleteObject("bucketName/test/")
  */
 func (c *Client) DeleteObject(objectPath string) (err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	err = oc.DeleteObject(objectPath)
 	return
 }
@@ -424,7 +442,7 @@ func (c *Client) DeleteObject(objectPath string) (err error) {
  *	c.DeleteMultipleObject("bucketName", []string{"copy_test1.txt", "copy_test2.txt"})
  */
 func (c *Client) DeleteMultipleObject(bucketName string, keys []string) (err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	err = oc.DeleteMultipleObject(bucketName, keys)
 	return
 }
@@ -439,7 +457,7 @@ func (c *Client) DeleteMultipleObject(bucketName string, keys []string) (err err
  *	--> map[Accept-Ranges:[bytes] Etag:["xxxxx"] Server:[AliyunOSS] Date:[xxxx GMT] Content-Type:[text/plain; charset=utf-8] Content-Length:[x] Last-Modified:[xxxx GMT] X-Oss-Request-Id:[xxxxxx]] <nil>
  */
 func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	header, err = oc.HeadObject(objectPath)
 	return
 }
@@ -452,7 +470,7 @@ func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
  *	err := c.PostObject(bucketName, filePath)
  */
 func (c *Client) PostObject(bucketName, filePath string) (err error) {
-	oc := ConvertClientObject(c)
+	oc := c.OClient
 	err = oc.PostObject(bucketName, filePath)
 	return
 }
@@ -464,19 +482,49 @@ func (c *Client) PostObject(bucketName, filePath string) (err error) {
  *	Example:
  *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", 1024000)
  */
-func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (cmur types.CompleteMultipartUploadResult, err error) {
-	mc := ConvertClientMultipart(c)
+func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
+	mc := c.MClient
 	initObjectPath, imur, _ := mc.InitiateMultipartUpload(objectPath)
 	isLastPart := false
-	cmu := types.CompleteMultipartUpload{}
-	var endPoint int64 = 0
+	lastPoint = 0
+	uploadId = imur.UploadId
 	for i := 1; isLastPart == false; i++ {
-		isLastPart, endPoint, cmu, err = mc.UploadPart(imur, initObjectPath, filePath, cmu, endPoint, cutLength, i)
+		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, initObjectPath, filePath, cmu, lastPoint, cutLength, i)
 		if err != nil {
 			return
 		}
 	}
-	cmur, err = mc.CompleteMultipartUpload(cmu, initObjectPath, imur.UploadId)
+	return
+}
+
+//	Multipart Upload: ContinueMultipartUpload.
+//	Upload a file by multipart upload.
+// 	用Multipart Upload方式继续上传文件。
+/*
+ *	Example:
+ *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", breakPoint, 1024000)
+ */
+func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint, cutLength int64, uploadId string) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadIdCon string) {
+	mc := c.MClient
+	lpr, _ := mc.ListParts(objectPath, uploadId)
+	maxPartNumber := 1
+	length := len(lpr.Part)
+	for i := 0; i < length; i++ {
+		if lpr.Part[i].PartNumber > maxPartNumber {
+			maxPartNumber = lpr.Part[0].PartNumber
+		}
+	}
+	isLastPart := false
+	imur := types.InitiateMultipartUploadResult{}
+	imur.UploadId = uploadId
+	uploadIdCon = uploadId
+	lastPoint = breakPoint
+	for i := maxPartNumber; isLastPart == false; i++ {
+		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, objectPath, filePath, cmu, lastPoint, cutLength, i)
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 
@@ -487,11 +535,10 @@ func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (
  *	Example:
  *	cmur, err := c.MultipartUploadCopy(bucketName, "test_muc.pdf", "test.pdf", 1024000)
  */
-func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cutLength int64) (cmur types.CompleteMultipartUploadResult, err error) {
-	mc := ConvertClientMultipart(c)
+func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cutLength int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
+	mc := c.MClient
 	initObjectPath, imur, _ := mc.InitiateMultipartUpload(bucketName + "/" + objectPath)
 	isLastPart := false
-	cmu := types.CompleteMultipartUpload{}
 	var length int64 = 0
 	// 	Get the length of copyFile
 	lbr, _ := c.GetBucketInfo(bucketName, "", "", "", "100")
@@ -502,14 +549,27 @@ func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cu
 			length = int64(size)
 		}
 	}
-	var endPoint int64 = 0
+	lastPoint = 0
 	for i := 1; isLastPart == false; i++ {
-		isLastPart, endPoint, _, cmu, err = mc.UploadPartCopy(imur, initObjectPath, bucketName+"/"+copyPath, cmu, endPoint, cutLength, length, i)
+		isLastPart, lastPoint, _, cmu, err = mc.UploadPartCopy(imur, initObjectPath, bucketName+"/"+copyPath, cmu, lastPoint, cutLength, length, i)
 		if err != nil {
 			return
 		}
 	}
-	cmur, err = mc.CompleteMultipartUpload(cmu, initObjectPath, imur.UploadId)
+	uploadId = imur.UploadId
+	return
+}
+
+//	Multipart Upload: CompleteMultipartUpload.
+//	Complete the unuploaded multipart upload parts whose uploadId is thisId.
+// 	完成指定UploadId的Multipart Upload上传。
+/*
+ *	Example:
+ *	err := c.CompleteMultipartUpload(cmu, initObjectPath, uploadId)
+ */
+func (c *Client) CompleteMultipartUpload(cmu types.CompleteMultipartUpload, initObjectPath, uploadId string) (cmur types.CompleteMultipartUploadResult, err error) {
+	mc := c.MClient
+	cmur, err = mc.CompleteMultipartUpload(cmu, initObjectPath, uploadId)
 	return
 }
 
@@ -521,7 +581,7 @@ func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cu
  *	err := c.AbortMultipartUpload(objectPath, uploadId)
  */
 func (c *Client) AbortMultipartUpload(objectPath, uploadId string) (err error) {
-	mc := ConvertClientMultipart(c)
+	mc := c.MClient
 	err = mc.AbortMultipartUpload(objectPath, uploadId)
 	return
 }
@@ -534,7 +594,7 @@ func (c *Client) AbortMultipartUpload(objectPath, uploadId string) (err error) {
  *	err := c.CleanMultipartUpload(bucketName)
  */
 func (c *Client) CleanMultipartUpload(bucketName string) (err error) {
-	mc := ConvertClientMultipart(c)
+	mc := c.MClient
 	lmur, _ := mc.ListMultipartUpload(bucketName, nil)
 	length := len(lmur.Upload)
 	for i := 0; i < length; i++ {
@@ -552,7 +612,7 @@ func (c *Client) CleanMultipartUpload(bucketName string) (err error) {
  *	If you want to search all results, second parameter is nil.
  */
 func (c *Client) ListMultipartUpload(bucketName string, params map[string]string) (lmur types.ListMultipartUploadResult, err error) {
-	mc := ConvertClientMultipart(c)
+	mc := c.MClient
 	lmur, err = mc.ListMultipartUpload(bucketName, params)
 	return
 }
@@ -566,12 +626,12 @@ func (c *Client) ListMultipartUpload(bucketName string, params map[string]string
  *	lpr, err := c.ListParts(bucketName, uploadId)
  */
 func (c *Client) ListParts(objectName, uploadId string) (lpr types.ListPartsResult, err error) {
-	mc := ConvertClientMultipart(c)
+	mc := c.MClient
 	lpr, err = mc.ListParts(objectName, uploadId)
 	return
 }
 
 func (c *Client) InitiateMultipartUpload(objectPath string) {
-	mc := ConvertClientMultipart(c)
+	mc := c.MClient
 	mc.InitiateMultipartUpload(objectPath)
 }

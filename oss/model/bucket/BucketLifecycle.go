@@ -37,7 +37,7 @@ import (
  *	If the referers is null, its AllowEmptyReferer'default is true.
  */
 func (c *Client) PutBucketLifecycle(bucketName string, rules []types.Rule) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?lifecycle"
 
@@ -84,7 +84,7 @@ func (c *Client) PutBucketLifecycle(bucketName string, rules []types.Rule) (err 
  *	lfc,err := c.GetBucketLifecycle(bucketName)
  */
 func (c *Client) GetBucketLifecycle(bucketName string) (lfc types.LifecycleConfiguration, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?lifecycle"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

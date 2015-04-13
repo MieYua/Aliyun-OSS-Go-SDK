@@ -52,12 +52,12 @@ func (c *Client) SignHeader(req *http.Request, canonicalizedResource string) {
 	contentMd5 := req.Header.Get("Content-Md5")
 
 	signStr := req.Method + "\n" + contentMd5 + "\n" + contentType + "\n" + date + "\n" + canonicalizedOSSHeaders + canonicalizedResource
-	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(c.AccessKeySecret))
+	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(c.TClient.AccessKeySecret))
 	io.WriteString(h, signStr)
 	signedStr := base64.StdEncoding.EncodeToString(h.Sum(nil))
 
 	// Get the final Authorization' string
-	authorizationStr := "OSS " + c.AccessKeyId + ":" + signedStr
+	authorizationStr := "OSS " + c.TClient.AccessKeyId + ":" + signedStr
 
 	// Give the parameter "Authorization" value
 	req.Header.Set("Authorization", authorizationStr)

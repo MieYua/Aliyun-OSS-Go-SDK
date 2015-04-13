@@ -25,7 +25,7 @@ import (
  *	If file size is larger than 1GB, please use function UploadPartCopy
  */
 func (c *Client) CopyObject(pasteSrc, copySrc string) (cor types.CopyObjectResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(copySrc, "/") == false {
 		copySrc = "/" + copySrc

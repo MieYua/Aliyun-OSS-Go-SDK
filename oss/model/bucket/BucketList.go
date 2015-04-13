@@ -23,7 +23,7 @@ import (
  *	maxkeys: The maximum of objects (default:"100")
  */
 func (c *Client) GetBucket(bucketName, prefix, marker, delimiter, maxkeys string) (lbr types.ListBucketResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName
 	resStr := reqStr

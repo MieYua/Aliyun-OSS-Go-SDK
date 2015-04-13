@@ -9,10 +9,19 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"strings"
 )
+
+//	Import common.Client.
+/*
+ *
+ */
+type Client struct {
+	CClient *common.Client
+}
 
 // 	Start the multipartUpload and  get the UploadId.
 /*
@@ -20,7 +29,7 @@ import (
  *	initObjectPath, imur, err := c.InitiateMultipartUpload("bucketName/test.txt")
  */
 func (c *Client) InitiateMultipartUpload(objectPath string) (initObjectPath string, imur types.InitiateMultipartUploadResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

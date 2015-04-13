@@ -21,11 +21,11 @@ import (
  *		data: io file
  */
 func (c *Client) DoRequest(method, path, canonicalizedResource string, params map[string]string, data io.Reader) (resp *http.Response, err error) {
-	reqUrl := "http://" + c.Host + path
+	reqUrl := "http://" + c.TClient.Host + path
 	req, _ := http.NewRequest(method, reqUrl, data)
 	date := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT")
 	req.Header.Set("Date", date)
-	req.Header.Set("Host", c.Host)
+	req.Header.Set("Host", c.TClient.Host)
 
 	if params != nil {
 		for k, v := range params {
@@ -39,7 +39,7 @@ func (c *Client) DoRequest(method, path, canonicalizedResource string, params ma
 
 	c.SignHeader(req, canonicalizedResource)
 
-	resp, err = c.HttpClient.Do(req)
+	resp, err = c.TClient.HttpClient.Do(req)
 
 	if method == "POST" {
 		resp.Header.Set(consts.HH_AUTHORIZATION, req.Header.Get(consts.HH_AUTHORIZATION))

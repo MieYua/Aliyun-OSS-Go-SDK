@@ -30,7 +30,7 @@ import (
  *	err := c.PutBucketCors(bucketName, [](types)CORSRule{corsRule1})
  */
 func (c *Client) PutBucketCORS(bucketName string, corsRules []types.CORSRule) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?cors"
 
@@ -79,7 +79,7 @@ func (c *Client) PutBucketCORS(bucketName string, corsRules []types.CORSRule) (e
  *	corsc, err := c.GetBucketCors(bucketName)
  */
 func (c *Client) GetBucketCORS(bucketName string) (corsc types.CORSConfiguration, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?cors"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

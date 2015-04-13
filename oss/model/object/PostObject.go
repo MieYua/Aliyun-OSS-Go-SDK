@@ -23,7 +23,7 @@ import (
  *	err := c.PostObject(bucketName, filePath)
  */
 func (c *Client) PostObject(bucketName, filePath string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(bucketName, "/") == false {
 		bucketName = "/" + bucketName

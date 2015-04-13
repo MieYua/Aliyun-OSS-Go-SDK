@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
 	"io/ioutil"
@@ -16,6 +17,14 @@ import (
 	"os"
 	"strings"
 )
+
+//	Import common.Client.
+/*
+ *
+ */
+type Client struct {
+	CClient *common.Client
+}
 
 // 	Create a new object to a bucket.
 /*
@@ -26,7 +35,7 @@ import (
  *			Can be names of filepacks(bucketName/filepack/../file).
  */
 func (c *Client) PutObject(objectPath, filePath string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

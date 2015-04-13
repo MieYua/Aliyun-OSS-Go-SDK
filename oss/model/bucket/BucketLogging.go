@@ -24,7 +24,7 @@ import (
  *	If the targetPrefix is null, its default is "MyLog-".
  */
 func (c *Client) PutBucketLogging(bucketName, targetBucket, targetPrefix string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?logging"
 
@@ -35,11 +35,7 @@ func (c *Client) PutBucketLogging(bucketName, targetBucket, targetPrefix string)
 	} else {
 		lxml.LoggingEnabled.TargetBucket = targetBucket
 	}
-	if targetPrefix == "" {
-		lxml.LoggingEnabled.TargetPrefix = "MyLog-"
-	} else {
-		lxml.LoggingEnabled.TargetPrefix = targetPrefix
-	}
+	lxml.LoggingEnabled.TargetPrefix = targetPrefix
 
 	bs, err := xml.Marshal(lxml)
 	if err != nil {
@@ -74,7 +70,7 @@ func (c *Client) PutBucketLogging(bucketName, targetBucket, targetPrefix string)
  *	bls, err := c.GetBucketLogging(bucketName)
  */
 func (c *Client) GetBucketLogging(bucketName string) (bls types.BucketLoggingStatus, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?logging"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

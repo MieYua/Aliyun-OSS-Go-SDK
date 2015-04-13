@@ -21,7 +21,7 @@ import (
  *	cmur, err := CompleteMultipartUpload(cmu, initObjectPath, uploadId)
  */
 func (c *Client) CompleteMultipartUpload(cmu types.CompleteMultipartUpload, initObjectPath, uploadId string) (cmur types.CompleteMultipartUploadResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(initObjectPath, "/") == false {
 		initObjectPath = "/" + initObjectPath

@@ -19,3 +19,7 @@ type Client struct {
 	HttpClient      *http.Client // http客户端
 	FileIOLocker    sync.Mutex   // 排它锁
 }
+
+type ConvertClient interface {
+	PutBucket(string) error
+}

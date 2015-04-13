@@ -23,7 +23,7 @@ import (
  *	If the referers is null, its AllowEmptyReferer'default is true.
  */
 func (c *Client) PutBucketReferer(bucketName string, referers []string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?referer"
 
@@ -71,7 +71,7 @@ func (c *Client) PutBucketReferer(bucketName string, referers []string) (err err
  *	rc,err := c.GetBucektReferer(bucketName)
  */
 func (c *Client) GetBucketReferer(bucketName string) (rc types.RefererConfiguration, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + bucketName + "?referer"
 	resp, err := cc.DoRequest("GET", reqStr, reqStr, nil, nil)

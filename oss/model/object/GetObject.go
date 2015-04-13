@@ -25,7 +25,7 @@ import (
  *	fmt.Println(string(obytes[:]), err)-->test <nil>
  */
 func (c *Client) GetObject(objectPath string, rangeStart, rangeEnd int) (obytes []byte, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

@@ -23,7 +23,7 @@ import (
  *	response will show 403 ERROR.
  */
 func (c *Client) OptionObject(opath, accessControlRequestMethod, accessControlRequestHeader, origin string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	reqStr := "/" + opath
 

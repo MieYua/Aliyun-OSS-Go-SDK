@@ -27,7 +27,7 @@ import (
  *		c.DeleteObject("bucketName/test/")
  */
 func (c *Client) DeleteObject(objectPath string) (err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath

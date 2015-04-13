@@ -20,7 +20,7 @@ import (
  *	lpr, err := c.ListParts(objectName, uploadId)
  */
 func (c *Client) ListParts(objectName, uploadId string) (lpr types.ListPartsResult, err error) {
-	cc := ConvertClient(c)
+	cc := c.CClient
 
 	if strings.HasPrefix(objectName, "/") == false {
 		objectName = "/" + objectName

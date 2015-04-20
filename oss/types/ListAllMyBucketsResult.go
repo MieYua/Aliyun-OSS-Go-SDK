@@ -8,6 +8,6 @@ package types
 // The analysis of response's XML part of function GetService.
 // GetService返回值的XML解析结果。
 type ListAllMyBucketsResult struct {
-	Owner   Owner
-	Buckets []Bucket
+	Owner   Owner    `xml:"Owner"`
+	Buckets []Bucket `xml:"Buckets"`
 }

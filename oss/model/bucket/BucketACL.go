@@ -56,11 +56,11 @@ func (c *Client) GetBucketACL(bucketName string) (acl types.AccessControlPolicy,
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &acl)
 	if err == nil {

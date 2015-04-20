@@ -60,6 +60,7 @@ func (c *Client) PutBucketLogging(bucketName, targetBucket, targetPrefix string)
 		defer resp.Body.Close()
 		fmt.Println(string(body))
 	}
+
 	fmt.Println("The logging's setting of " + bucketName + " has been changed.")
 	return
 }
@@ -81,11 +82,11 @@ func (c *Client) GetBucketLogging(bucketName string) (bls types.BucketLoggingSta
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &bls)
 	if err == nil {

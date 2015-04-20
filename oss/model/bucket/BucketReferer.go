@@ -61,6 +61,7 @@ func (c *Client) PutBucketReferer(bucketName string, referers []string) (err err
 		defer resp.Body.Close()
 		fmt.Println(string(body))
 	}
+
 	fmt.Println("The referer's setting of " + bucketName + " has been changed.")
 	return
 }
@@ -82,11 +83,11 @@ func (c *Client) GetBucketReferer(bucketName string) (rc types.RefererConfigurat
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &rc)
 	if err == nil {

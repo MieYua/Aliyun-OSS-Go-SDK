@@ -7,7 +7,7 @@ package bucket
 
 import (
 	"encoding/xml"
-	"errors"
+	//"errors"
 	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
@@ -30,11 +30,11 @@ func (c *Client) GetBucketLocation(bucketName string) (lc types.LocationConstrai
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &lc)
 	if err == nil {

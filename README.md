@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 2.0 (Released on 150402)</strong>
+* <strong>Ver. 2.2 (Released on 150420)</strong>
 
 ---
 
@@ -26,10 +26,16 @@
 * Rewrite the readme.md.
 
 ### Ver. 2.0 (20150402)
-* <strong>Package Go files of Ver. 1.1;</strong>  
-* <strong>Add package common, consts, model, types;</strong>  
-* <strong>Add file oss_convert.go;</strong>  
-* <strong>Simplify some functions of package oss.</strong>
+* Package Go files of Ver. 1.1;  
+* Add package common, consts, model, types;  
+* Add file oss_convert.go;</strong>  
+* Simplify some functions of package oss.
+
+### Ver. 2.1 (20150413) ###
+* Small changes of Ver. 2.0.
+
+### Ver. 2.2 (20150420) ###
+* <strong>Delete some println of Ver. 2.1.</strong>
 
 ---
 

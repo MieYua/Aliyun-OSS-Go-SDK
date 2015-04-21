@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 2.2 (Released on 150420)</strong>
+* <strong>Ver. 2.3 (Released on 150421)</strong>
 
 ---
 
@@ -35,7 +35,10 @@
 * Small changes of Ver. 2.0.
 
 ### Ver. 2.2 (20150420) ###
-* <strong>Delete some println of Ver. 2.1.</strong>
+* Delete some println of Ver. 2.1.
+
+### Ver. 2.3 (20150421) ###
+* <strong>Fix func BucketReferer&GetService of Ver. 2.2.</strong>
 
 ---
 

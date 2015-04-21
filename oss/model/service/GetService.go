@@ -46,7 +46,9 @@ func (c *Client) GetService() (lambr types.ListAllMyBucketsResult, err error) {
 		fmt.Println(string(body))
 		return
 	}
+
 	err = xml.Unmarshal(body, &lambr)
+
 	if err == nil {
 		fmt.Println("You have got this service's details.")
 	}

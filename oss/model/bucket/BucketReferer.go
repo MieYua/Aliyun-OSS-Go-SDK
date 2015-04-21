@@ -90,6 +90,7 @@ func (c *Client) GetBucketReferer(bucketName string) (rc types.RefererConfigurat
 	// }
 
 	err = xml.Unmarshal(body, &rc)
+
 	if err == nil {
 		fmt.Println("You have got the referer's setting of " + bucketName + ".")
 	}

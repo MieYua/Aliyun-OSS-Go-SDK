@@ -8,6 +8,6 @@ package types
 // Owner's struct.
 // Owner属性。
 type Owner struct {
-	ID          string
-	DisplayName string
+	ID          string `xml:"ID"`
+	DisplayName string `xml:"DisplayName"`
 }

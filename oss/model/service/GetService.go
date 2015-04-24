@@ -7,11 +7,10 @@ package service
 
 import (
 	"encoding/xml"
-	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	//"log"
 )
 
 //	Import common.Client.
@@ -41,16 +40,16 @@ func (c *Client) GetService() (lambr types.ListAllMyBucketsResult, err error) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &lambr)
 
 	if err == nil {
-		fmt.Println("You have got this service's details.")
+		// log.Println("You have got this service's details.")
 	}
 	return
 }

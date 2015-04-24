@@ -6,7 +6,7 @@
 package common
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"net/http"
 )
@@ -27,7 +27,7 @@ func NewClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 		AccessKeySecret: accessKeySecret,
 		HttpClient:      http.DefaultClient,
 	}
-	fmt.Println("This client is ready.")
+	//fmt.Println("This client is ready.")
 	c := Client{}
 	c.TClient = client
 	return &c

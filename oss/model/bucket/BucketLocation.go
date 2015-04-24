@@ -8,9 +8,9 @@ package bucket
 import (
 	"encoding/xml"
 	//"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	//"log"
 )
 
 // 	Get the location of this bucket's endpoint.
@@ -32,13 +32,13 @@ func (c *Client) GetBucketLocation(bucketName string) (lc types.LocationConstrai
 
 	// if resp.StatusCode != 200 {
 	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
+	// 	log.Println(string(body))
 	// 	return
 	// }
 
 	err = xml.Unmarshal(body, &lc)
 	if err == nil {
-		fmt.Println("You have got the region's location of " + bucketName + ".")
+		// log.Println("You have got the region's location of " + bucketName + ".")
 	}
 	return
 }

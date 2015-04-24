@@ -9,10 +9,10 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -63,9 +63,9 @@ func (c *Client) PutBucketWebsite(bucketName, indexDocument, errorDocument strin
 		err = errors.New(resp.Status)
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
-		fmt.Println(string(body))
+		log.Println(string(body))
 	}
-	fmt.Println("The website's setting of " + bucketName + " has been changed.")
+	log.Println("The website's setting of " + bucketName + " has been changed.")
 	return
 }
 
@@ -88,13 +88,13 @@ func (c *Client) GetBucketWebsite(bucketName string) (wc types.WebsiteConfigurat
 
 	// if resp.StatusCode != 200 {
 	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
+	// 	log.Println(string(body))
 	// 	return
 	// }
 
 	err = xml.Unmarshal(body, &wc)
 	if err == nil {
-		fmt.Println("You have got the website's setting of " + bucketName + ".")
+		// log.Println("You have got the website's setting of " + bucketName + ".")
 	}
 	return
 }

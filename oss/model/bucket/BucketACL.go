@@ -8,10 +8,10 @@ package bucket
 import (
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 )
 
 // 	Change the setting of this bucket' acl.
@@ -33,9 +33,9 @@ func (c *Client) PutBucketACL(bucketName, acl string) (err error) {
 		err = errors.New(resp.Status)
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
-		fmt.Println(string(body))
+		log.Println(string(body))
 	}
-	fmt.Println("The ACL's setting of " + bucketName + " has been changed.")
+	log.Println("The ACL's setting of " + bucketName + " has been changed.")
 	return
 }
 
@@ -58,13 +58,13 @@ func (c *Client) GetBucketACL(bucketName string) (acl types.AccessControlPolicy,
 
 	// if resp.StatusCode != 200 {
 	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
+	// 	log.Println(string(body))
 	// 	return
 	// }
 
 	err = xml.Unmarshal(body, &acl)
 	if err == nil {
-		fmt.Println("You have got the ACL's setting of " + bucketName + ".")
+		// log.Println("You have got the ACL's setting of " + bucketName + ".")
 	}
 	return
 }

@@ -8,9 +8,9 @@ package bucket
 import (
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 )
 
 // 	Get the details of this bucket with some parameters.
@@ -61,12 +61,12 @@ func (c *Client) GetBucket(bucketName, prefix, marker, delimiter, maxkeys string
 
 	if resp.StatusCode != 200 {
 		err = errors.New(resp.Status)
-		fmt.Println(string(body))
+		log.Println(string(body))
 		return
 	}
 	err = xml.Unmarshal(body, &lbr)
 	if err == nil {
-		fmt.Println("You have got all the objects' settings of " + bucketName + ".")
+		log.Println("You have got all the objects' settings of " + bucketName + ".")
 	}
 	return
 }

@@ -9,11 +9,11 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -67,8 +67,8 @@ func (c *Client) PutBucket(bucketName string) (err error) {
 		err = errors.New(resp.Status)
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
-		fmt.Println(string(body))
+		log.Println(string(body))
 	}
-	fmt.Println("A new bucket(" + bucketName + ") has been created.")
+	log.Println("A new bucket(" + bucketName + ") has been created.")
 	return
 }

@@ -9,10 +9,10 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -72,9 +72,9 @@ func (c *Client) PutBucketLifecycle(bucketName string, rules []types.Rule) (err 
 		err = errors.New(resp.Status)
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
-		fmt.Println(string(body))
+		log.Println(string(body))
 	}
-	fmt.Println("The lifecycle's setting of " + bucketName + " has been changed.")
+	log.Println("The lifecycle's setting of " + bucketName + " has been changed.")
 	return
 }
 
@@ -97,13 +97,13 @@ func (c *Client) GetBucketLifecycle(bucketName string) (lfc types.LifecycleConfi
 
 	// if resp.StatusCode != 200 {
 	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
+	// 	log.Println(string(body))
 	// 	return
 	// }
 
 	err = xml.Unmarshal(body, &lfc)
 	if err == nil {
-		fmt.Println("You have got the lifecycle's setting of " + bucketName + ".")
+		// log.Println("You have got the lifecycle's setting of " + bucketName + ".")
 	}
 	return
 }

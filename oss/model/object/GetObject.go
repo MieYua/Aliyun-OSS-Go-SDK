@@ -6,8 +6,8 @@
 package object
 
 import (
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io/ioutil"
 	"strconv"
@@ -44,12 +44,12 @@ func (c *Client) GetObject(objectPath string, rangeStart, rangeEnd int) (obytes 
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 && resp.StatusCode != 206 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 && resp.StatusCode != 206 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 	obytes = body
-	fmt.Println("You have got the details of this object(" + objectPath + ").")
+	//fmt.Println("You have got the details of this object(" + objectPath + ").")
 	return
 }

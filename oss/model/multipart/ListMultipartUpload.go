@@ -7,8 +7,8 @@ package multipart
 
 import (
 	"encoding/xml"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"strings"
@@ -42,13 +42,13 @@ func (c *Client) ListMultipartUpload(bucketName string, params map[string]string
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &lmur)
-	fmt.Println("You have got all the unuploaded parts' details of " + bucketName + ".")
+	//fmt.Println("You have got all the unuploaded parts' details of " + bucketName + ".")
 	return
 }

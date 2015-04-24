@@ -6,9 +6,9 @@
 package object
 
 import (
-	"errors"
-	"fmt"
-	"io/ioutil"
+	//"errors"
+	//"fmt"
+	//"io/ioutil"
 	"strings"
 )
 
@@ -32,17 +32,17 @@ func (c *Client) DeleteObject(objectPath string) (err error) {
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath
 	}
-	resp, err := cc.DoRequest("DELETE", objectPath, objectPath, nil, nil)
+	_, err = cc.DoRequest("DELETE", objectPath, objectPath, nil, nil)
 	if err != nil {
 		return
 	}
 
-	if resp.StatusCode != 204 {
-		err = errors.New(resp.Status)
-		body, _ := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		fmt.Println(string(body))
-	}
-	fmt.Println("The (" + objectPath + ") has been deleted.")
+	// if resp.StatusCode != 204 {
+	// 	err = errors.New(resp.Status)
+	// 	body, _ := ioutil.ReadAll(resp.Body)
+	// 	defer resp.Body.Close()
+	// 	fmt.Println(string(body))
+	// }
+	//fmt.Println("The (" + objectPath + ") has been deleted.")
 	return
 }

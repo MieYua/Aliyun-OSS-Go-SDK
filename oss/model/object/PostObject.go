@@ -7,11 +7,11 @@ package object
 
 import (
 	"bytes"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
-	"io/ioutil"
+	//"io/ioutil"
 	"mime/multipart"
 	"os"
 	"strings"
@@ -63,19 +63,19 @@ func (c *Client) PostObject(bucketName, filePath string) (err error) {
 	params[consts.HH_CONTENT_TYPE] = "multipart/form-data; boundary=" + bodyWriter.Boundary()
 	bodyWriter.Close()
 
-	resp, err := cc.DoRequest("POST", bucketName, bucketName, params, buffer)
+	_, err = cc.DoRequest("POST", bucketName, bucketName, params, buffer)
 	if err != nil {
 		return
 	}
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
-	fmt.Println("The object(" + bucketName + ") has been posted up.")
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
+	//fmt.Println("The object(" + bucketName + ") has been posted up.")
 	return
 }

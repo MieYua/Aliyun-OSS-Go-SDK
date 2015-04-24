@@ -7,8 +7,8 @@ package object
 
 import (
 	"encoding/xml"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
@@ -42,16 +42,16 @@ func (c *Client) CopyObject(pasteSrc, copySrc string) (cor types.CopyObjectResul
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		body, _ := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		fmt.Println(string(body))
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	body, _ := ioutil.ReadAll(resp.Body)
+	// 	defer resp.Body.Close()
+	// 	fmt.Println(string(body))
+	// }
 
 	err = xml.Unmarshal(body, &cor)
 	if err == nil {
-		fmt.Println("The object(" + copySrc + ") has been copied to (" + pasteSrc + ").")
+		//fmt.Println("The object(" + copySrc + ") has been copied to (" + pasteSrc + ").")
 	}
 	return
 }

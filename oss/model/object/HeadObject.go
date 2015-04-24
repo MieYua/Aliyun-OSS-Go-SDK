@@ -6,8 +6,8 @@
 package object
 
 import (
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"net/http"
 	"strings"
 )
@@ -30,11 +30,11 @@ func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
 		return
 	}
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	return
+	// }
 	header = resp.Header
-	fmt.Println("You have got the header's meta of (" + objectPath + ").")
+	//fmt.Println("You have got the header's meta of (" + objectPath + ").")
 	return
 }

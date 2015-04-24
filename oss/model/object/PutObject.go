@@ -7,12 +7,12 @@ package object
 
 import (
 	"bytes"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
-	"io/ioutil"
+	//"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -53,19 +53,19 @@ func (c *Client) PutObject(objectPath, filePath string) (err error) {
 	params := map[string]string{}
 	params[consts.HH_CONTENT_TYPE] = contentType
 
-	resp, err := cc.DoRequest("PUT", objectPath, objectPath, params, buffer)
+	_, err = cc.DoRequest("PUT", objectPath, objectPath, params, buffer)
 	if err != nil {
 		return
 	}
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
-	fmt.Println("A new object(" + objectPath + ") has been put into this bucket.")
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
+	//fmt.Println("A new object(" + objectPath + ") has been put into this bucket.")
 	return
 }

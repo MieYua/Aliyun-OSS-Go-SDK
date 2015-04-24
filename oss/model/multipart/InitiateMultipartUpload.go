@@ -7,8 +7,8 @@ package multipart
 
 import (
 	"encoding/xml"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
@@ -43,13 +43,13 @@ func (c *Client) InitiateMultipartUpload(objectPath string) (initObjectPath stri
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &imur)
-	fmt.Println("The multipart upload has been intiated and you have got the UploadId.")
+	//fmt.Println("The multipart upload has been intiated and you have got the UploadId.")
 	return
 }

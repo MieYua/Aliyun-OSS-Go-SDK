@@ -7,8 +7,8 @@ package multipart
 
 import (
 	"encoding/xml"
-	"errors"
-	"fmt"
+	//"errors"
+	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"strings"
@@ -35,13 +35,13 @@ func (c *Client) ListParts(objectName, uploadId string) (lpr types.ListPartsResu
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		err = errors.New(resp.Status)
-		fmt.Println(string(body))
-		return
-	}
+	// if resp.StatusCode != 200 {
+	// 	err = errors.New(resp.Status)
+	// 	fmt.Println(string(body))
+	// 	return
+	// }
 
 	err = xml.Unmarshal(body, &lpr)
-	fmt.Println("You have got all the uploaded files' details of " + objectName + " by uploadId:" + uploadId + ".")
+	//fmt.Println("You have got all the uploaded files' details of " + objectName + " by uploadId:" + uploadId + ".")
 	return
 }

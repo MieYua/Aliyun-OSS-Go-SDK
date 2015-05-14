@@ -14,5 +14,5 @@ import (
 type RefererXML struct {
 	XMLName           xml.Name `xml:"RefererConfiguration"`
 	AllowEmptyReferer bool     // 是否允许白名单为空
-	RefererList       []Referer
+	RefererList       []RefererList
 }

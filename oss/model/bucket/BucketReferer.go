@@ -30,11 +30,11 @@ func (c *Client) PutBucketReferer(bucketName string, referers []string) (err err
 	rxml := types.RefererXML{}
 	rxml.AllowEmptyReferer = true
 	if referers == nil {
-		rxml.RefererList = append(rxml.RefererList, types.Referer{""})
+		rxml.RefererList = append(rxml.RefererList, types.RefererList{[]string{""}})
 		rxml.AllowEmptyReferer = true
 	} else {
 		for _, v := range referers {
-			rxml.RefererList = append(rxml.RefererList, types.Referer{v})
+			rxml.RefererList = append(rxml.RefererList, types.RefererList{[]string{v}})
 			rxml.AllowEmptyReferer = false
 		}
 	}

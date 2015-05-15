@@ -375,6 +375,22 @@ func (c *Client) CreateObject(objectPath, filePath string) (err error) {
 	return
 }
 
+// 	Object: CreateObjectWeb.
+// 	Create a new object to a bucket in web service.
+// 	网页中在Bucket中新建一个Object。
+/*
+ *	Example:
+ *	err := c.PutObjectWeb(objectPath, file)
+ *	objectPath:
+ *			Can be just a name of file(bucketName/fileName),
+ *			Can be names of filepacks(bucketName/filePack/../fileName).
+ */
+func (c *Client) CreateObjectWeb(objectPath string, file []byte) (err error) {
+	oc := c.OClient
+	err = oc.PutObjectWeb(objectPath, file)
+	return
+}
+
 // 	Object: CopyObject.
 // 	Copy an object of one bucket to another bucket or this one.
 // 	在Bucket中拷贝一个Object。
@@ -497,6 +513,28 @@ func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (
 	return
 }
 
+//	Multipart Upload: MultipartUploadWeb.
+//	Upload a file by multipart upload in web service.
+// 	在浏览器用Multipart Upload方式上传文件。
+/*
+ *	Example:
+ *	cmur, err := c.MultipartUploadWeb(bucketName+"/test_mu.pdf", file, 1024000)
+ */
+func (c *Client) MultipartUploadWeb(objectPath string, file []byte, cutLength int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
+	mc := c.MClient
+	initObjectPath, imur, _ := mc.InitiateMultipartUpload(objectPath)
+	isLastPart := false
+	lastPoint = 0
+	uploadId = imur.UploadId
+	for i := 1; isLastPart == false; i++ {
+		isLastPart, lastPoint, cmu, err = mc.UploadPartWeb(imur, initObjectPath, file, cmu, lastPoint, cutLength, i)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
 //	Multipart Upload: ContinueMultipartUpload.
 //	Upload a file by multipart upload.
 // 	用Multipart Upload方式继续上传文件。
@@ -521,6 +559,37 @@ func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint
 	lastPoint = breakPoint
 	for i := maxPartNumber; isLastPart == false; i++ {
 		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, objectPath, filePath, cmu, lastPoint, cutLength, i)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+//	Multipart Upload: ContinueMultipartUploadWeb.
+//	Upload a file by multipart upload in web service.
+// 	在浏览器用Multipart Upload方式继续上传文件。
+/*
+ *	Example:
+ *	cmur, err := c.MultipartUploadWeb(bucketName+"/test_mu.pdf", file, breakPoint, 1024000)
+ */
+func (c *Client) ContinueMultipartUploadWeb(objectPath string, file []byte, breakPoint, cutLength int64, uploadId string) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadIdCon string) {
+	mc := c.MClient
+	lpr, _ := mc.ListParts(objectPath, uploadId)
+	maxPartNumber := 1
+	length := len(lpr.Part)
+	for i := 0; i < length; i++ {
+		if lpr.Part[i].PartNumber > maxPartNumber {
+			maxPartNumber = lpr.Part[0].PartNumber
+		}
+	}
+	isLastPart := false
+	imur := types.InitiateMultipartUploadResult{}
+	imur.UploadId = uploadId
+	uploadIdCon = uploadId
+	lastPoint = breakPoint
+	for i := maxPartNumber; isLastPart == false; i++ {
+		isLastPart, lastPoint, cmu, err = mc.UploadPartWeb(imur, objectPath, file, cmu, lastPoint, cutLength, i)
 		if err != nil {
 			return
 		}

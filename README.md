@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 3.1 (Released on 150424)</strong>
+* <strong>Ver. 3.2 (Released on 150515)</strong>
 
 ---
 
@@ -44,7 +44,11 @@
 * Delete many Println of Ver. 2.3.
 
 ### Ver. 3.1 (20150424) ###
-* <strong>Delete remaining Println of Ver. 3.0.</strong>
+* Delete remaining Println of Ver. 3.0.
+
+### Ver. 3.2 (20150515) ###
+* <strong>Add web service(PutObjectWeb&UploadPartWeb) of Ver. 3.1.</strong>
+
 
 ---
 

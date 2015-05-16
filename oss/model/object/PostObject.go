@@ -20,9 +20,9 @@ import (
 // 	Post up an object to replace putObject.
 /*
  *	Example:
- *	err := c.PostObject(bucketName, filePath)
+ *	err := c.PostObject(bucketName, fileName, tempFileName)
  */
-func (c *Client) PostObject(bucketName, filePath string) (err error) {
+func (c *Client) PostObject(bucketName, filePath string, tempFileName string) (err error) {
 	cc := c.CClient
 
 	if strings.HasPrefix(bucketName, "/") == false {
@@ -46,18 +46,17 @@ func (c *Client) PostObject(bucketName, filePath string) (err error) {
 	 *	bodyWriter.CreateFormField("Signature")
 	 *	//bodyWriter.CreateFormField("submit")
 	 */
-	fileWriter, err := bodyWriter.CreateFormFile("file", filePath)
+	fileWriter, err := bodyWriter.CreateFormFile("file", tempFileName)
 	if err != nil {
 		return
 	}
 
-	fh, err := os.Open(filePath)
+	fh, err := os.Open(tempFileName)
 	if err != nil {
 		return
 	}
-
-	defer fh.Close()
 	io.Copy(fileWriter, fh)
+	defer fh.Close()
 
 	params := map[string]string{}
 	params[consts.HH_CONTENT_TYPE] = "multipart/form-data; boundary=" + bodyWriter.Boundary()
@@ -68,14 +67,5 @@ func (c *Client) PostObject(bucketName, filePath string) (err error) {
 		return
 	}
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// defer resp.Body.Close()
-
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	//fmt.Println("The object(" + bucketName + ") has been posted up.")
 	return
 }

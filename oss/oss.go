@@ -483,11 +483,11 @@ func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
 // 	用Post方法上传Object。
 /*
  *	Example:
- *	err := c.PostObject(bucketName, filePath)
+ *	err := c.PostObject(bucketName, fileName, data)
  */
-func (c *Client) PostObject(bucketName, filePath string) (err error) {
+func (c *Client) PostObject(bucketName, filePath string, tempFileName string) (err error) {
 	oc := c.OClient
-	err = oc.PostObject(bucketName, filePath)
+	err = oc.PostObject(bucketName, filePath, tempFileName)
 	return
 }
 

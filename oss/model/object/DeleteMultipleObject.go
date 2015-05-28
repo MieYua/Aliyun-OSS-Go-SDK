@@ -10,19 +10,20 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/xml"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 )
 
-// 	Delete some objects at one time.
+// 	Delete some objects at one time(!!weird POST ?delete).
+//	批量删除Objects（！！诡异地使用POST删）。
 /*
  *	Example:
  *	c.CopyObject("bucketName/copy_test1.txt", "bucketName/test.txt")
  *	c.CopyObject("bucketName/copy_test2.txt", "bucketName/test.txt")
- *	c.DeleteMultipleObject("bucketName", []string{"copy_test1.txt", "copy_test2.txt"})
+ *	err := c.DeleteMultipleObject("bucketName", []string{"copy_test1.txt", "copy_test2.txt"})
  */
 func (c *Client) DeleteMultipleObject(bucketName string, keys []string) (err error) {
 	cc := c.CClient
@@ -49,24 +50,25 @@ func (c *Client) DeleteMultipleObject(bucketName string, keys []string) (err err
 	params := map[string]string{}
 	params[consts.HH_CONTENT_MD5] = md5sum
 
-	_, err = cc.DoRequest("POST", reqStr, reqStr, params, buffer)
+	resp, err := cc.DoRequest("POST", reqStr, reqStr, params, buffer)
 	if err != nil {
 		return
 	}
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	length := len(keys)
-	list := keys[0]
-	for i := 1; i < length; i++ {
-		list += ", " + keys[i]
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
 	}
-	//fmt.Println("The (" + list + ") of " + bucketName + " have been deleted.")
+	// length := len(keys)
+	// list := keys[0]
+	// for i := 1; i < length; i++ {
+	// 	list += ", " + keys[i]
+	// }
+
+	//log.Println("The (" + list + ") of " + bucketName + " have been deleted.")
 	return
 }

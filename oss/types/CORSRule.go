@@ -5,8 +5,8 @@
 
 package types
 
-// The rule of the CORS.
-// 跨域资源请求规则。
+//	The rule of the CORS.
+//	跨域资源请求规则。
 type CORSRule struct {
 	AllowedOrigin []string // 允许的来源，默认通配符"*"
 	AllowedMethod []string // 允许的方法

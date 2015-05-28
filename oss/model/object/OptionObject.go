@@ -6,13 +6,14 @@
 package object
 
 import (
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 )
 
 // 	Choose the object by options.
+//	选择筛选Object。
 /*
  *	Example:
  *	err := c.OptionObject("bucketName/test.txt", "", "")
@@ -43,18 +44,19 @@ func (c *Client) OptionObject(opath, accessControlRequestMethod, accessControlRe
 	} else {
 		params[consts.OH_ORIGIN] = "http://www.example.com"
 	}
-	_, err = cc.DoRequest("OPTIONS", reqStr, reqStr, params, nil)
+	resp, err := cc.DoRequest("OPTIONS", reqStr, reqStr, params, nil)
 	if err != nil {
 		return
 	}
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	body, _ := ioutil.ReadAll(resp.Body)
-	// 	defer resp.Body.Close()
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	//fmt.Println("CORS's request has passed by options.")
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		body, _ := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		log.Println(string(body))
+		return
+	}
+
+	//log.Println("CORS's request has passed by options.")
 	return
 }

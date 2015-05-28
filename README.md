@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 3.3 (Released on 150517)</strong>
+* <strong>Ver. 3.4 (Released on 150528)</strong>
 
 ---
 
@@ -49,16 +49,21 @@
 ### Ver. 3.2 (20150515) ###
 * Add web service(PutObjectWeb&UploadPartWeb) of Ver. 3.1.
 
-### Ver. 3.2 (20150515) ###
-* <strong>Change web service(PostObject) of Ver. 3.2.</strong>
+### Ver. 3.3 (20150517) ###
+* Change web service(PostObject) of Ver. 3.2.
 
+### Ver. 3.4 (20150528) ###
+* <strong>Add Chinese annotations of Ver. 3.3;</strong>
+* <strong>Add some errors' returns of Ver. 3.3;</strong>
+* <strong>Add new endpoint(USWest1);</strong>
+* <strong>Add CleanBucket of Ver. 3.3.</strong>
 
 ---
 
 ## OSS Documents ##
-* <http://docs.aliyun.com/?spm=5176.383663.9.2.WdBDj9#/oss>  
+* <http://docs.aliyun.com/#/oss>  
 
 ---
 
 ## OSS API ##
-* <strong>Date: 2015.03.19</strong>
+* <strong>Date: 2015.05.05</strong>

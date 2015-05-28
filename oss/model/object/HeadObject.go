@@ -6,13 +6,15 @@
 package object
 
 import (
-	//"errors"
-	//"fmt"
+	"errors"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
 
-// Find the object's head's meta information and show it out
+// 	Find the object's head's meta information and show it out.
+//	查询Object的头信息并显示。
 /*
  *	Example:
  *	header, err := c.HeadObject("bucketName/test.txt")
@@ -30,11 +32,16 @@ func (c *Client) HeadObject(objectPath string) (header http.Header, err error) {
 		return
 	}
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	return
-	// }
-	header = resp.Header
-	//fmt.Println("You have got the header's meta of (" + objectPath + ").")
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		body, _ := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		log.Println(string(body))
+		return
+	} else {
+		header = resp.Header
+	}
+
+	//log.Println("You have got the header's meta of (" + objectPath + ").")
 	return
 }

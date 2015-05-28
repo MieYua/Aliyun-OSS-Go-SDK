@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function ListParts.
-// 列出已上传的Part的返回XML解析结果。
+//	The analysis of response's XML part of function ListParts.
+//	列出已上传的Part的返回XML解析结果。
 type ListPartsResult struct {
 	Bucket               string         // Bucket名称
 	Key                  string         // Object名称

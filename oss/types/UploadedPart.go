@@ -5,8 +5,8 @@
 
 package types
 
-// The informations of the parts which have been uploaded.
-// 已上传得到Part信息。
+//	The informations of the parts which have been uploaded.
+//	已上传得到Part信息。
 type UploadedPart struct {
 	PartNumber   int    // Part编号
 	LastModified string // 最后一次提交时间

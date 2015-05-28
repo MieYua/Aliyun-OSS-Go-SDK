@@ -17,6 +17,7 @@ import (
 )
 
 // 	Change the setting of this bucket's logging.
+//	修改Bucket的日志设置。
 /*
  *	Example:
  *	err := PutBucketLogging(bucketName, targetBucket, targetPrefix)
@@ -59,13 +60,15 @@ func (c *Client) PutBucketLogging(bucketName, targetBucket, targetPrefix string)
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
 
-	log.Println("The logging's setting of " + bucketName + " has been changed.")
+	//log.Println("The logging's setting of " + bucketName + " has been changed.")
 	return
 }
 
 // 	Get the status of this bucket's logging.
+//	获得Bucket的日志设置。
 /*
  *	Example:
  *	bls, err := c.GetBucketLogging(bucketName)
@@ -82,15 +85,17 @@ func (c *Client) GetBucketLogging(bucketName string) (bls types.BucketLoggingSta
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &bls)
-	if err == nil {
-		// log.Println("You have got the logging's setting of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	// log.Println("You have got the logging's setting of " + bucketName + ".")
 	return
 }

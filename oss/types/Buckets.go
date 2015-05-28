@@ -5,8 +5,8 @@
 
 package types
 
-// Buckets's struct.
-// Buckets属性。
+//	Buckets's struct.
+//	Buckets属性。
 type Buckets struct {
 	Bucket []Bucket `xml:"Bucket"`
 }

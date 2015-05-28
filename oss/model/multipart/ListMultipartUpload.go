@@ -7,14 +7,15 @@ package multipart
 
 import (
 	"encoding/xml"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 	"strings"
 )
 
 // 	Give the list of the unuploaded multipart upload missions.
+//	列出所有未上传完整的multipart任务列表。
 /*
  *	Example:
  *	lmur, err := c.ListMultipartUpload(bucketName, map[string]string or nil)
@@ -42,13 +43,17 @@ func (c *Client) ListMultipartUpload(bucketName string, params map[string]string
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &lmur)
-	//fmt.Println("You have got all the unuploaded parts' details of " + bucketName + ".")
+	if err != nil {
+		return
+	}
+
+	//log.Println("You have got all the unuploaded parts' details of " + bucketName + ".")
 	return
 }

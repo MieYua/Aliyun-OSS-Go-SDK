@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function GetBucketLifecycle.
-// GetBucketLifecycle返回值的XML解析结果。
+// 	The analysis of response's XML part of function GetBucketLifecycle.
+//	GetBucketLifecycle返回值的XML解析结果。
 type LifecycleConfiguration struct {
 	Rule []Rule
 }

@@ -15,9 +15,10 @@ import (
 )
 
 // 	Deal with some requests.
+//	处理请求，返回响应结果。
 /*
  *	Example:
- *	resp,err := DoRequest(method, path, canonicalizedResource, params, data)
+ *	resp, err := DoRequest(method, path, canonicalizedResource, params, data)
  *		method: Get，Put，Post...
  *		data: io file
  */
@@ -39,8 +40,10 @@ func (c *Client) DoRequest(method, path, canonicalizedResource string, params ma
 	if data != nil {
 		req.Header.Set(consts.HH_CONTENT_LENGTH, strconv.Itoa(int(req.ContentLength)))
 	}
+
 	c.SignHeader(req, canonicalizedResource)
 	resp, err = c.TClient.HttpClient.Do(req)
+
 	if method == "POST" {
 		resp.Header.Set(consts.HH_AUTHORIZATION, req.Header.Get(consts.HH_AUTHORIZATION))
 	}

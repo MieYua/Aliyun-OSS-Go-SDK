@@ -5,8 +5,8 @@
 
 package types
 
-// The informations of the bucket's logging setting.
-// 日志设置信息。
+//	The informations of the bucket's logging setting.
+//	日志设置信息。
 type LoggingEnabled struct {
 	TargetBucket string // 日志存放Bucket名称
 	TargetPrefix string // 日志名称前缀

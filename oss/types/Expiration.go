@@ -5,8 +5,8 @@
 
 package types
 
-// The days of the lifecycle.
-// 生命周期时长。
+//	The days of the lifecycle.
+//	生命周期时长。
 type Expiration struct {
 	Days int // 生命周期天数
 }

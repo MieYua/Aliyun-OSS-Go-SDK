@@ -15,6 +15,7 @@ import (
 )
 
 // 	Change the setting of this bucket' acl.
+//	修改Bucket的ACL权限。
 /*
  *	Example:
  *	err := PutBucketACL(bucketName, (consts)ACL)
@@ -34,15 +35,18 @@ func (c *Client) PutBucketACL(bucketName, acl string) (err error) {
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
-	log.Println("The ACL's setting of " + bucketName + " has been changed.")
+
+	//log.Println("The ACL's setting of " + bucketName + " has been changed.")
 	return
 }
 
 // 	Get the setting of this bucket' acl.
+//	获得Bucket的ACL权限。
 /*
  *	Example:
- *	acl,err := GetBucketACL(bucketName)
+ *	acl, err := GetBucketACL(bucketName)
  */
 func (c *Client) GetBucketACL(bucketName string) (acl types.AccessControlPolicy, err error) {
 	cc := c.CClient
@@ -56,15 +60,17 @@ func (c *Client) GetBucketACL(bucketName string) (acl types.AccessControlPolicy,
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &acl)
-	if err == nil {
-		// log.Println("You have got the ACL's setting of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	//log.Println("You have got the ACL's setting of " + bucketName + ".")
 	return
 }

@@ -17,6 +17,7 @@ import (
 )
 
 // 	Change the setting of this bucket's lifecycle.
+//	修改Bucket的生命周期设置。
 /*
  *	Example:
  *	rule1 := (types)Rule{
@@ -73,15 +74,18 @@ func (c *Client) PutBucketLifecycle(bucketName string, rules []types.Rule) (err 
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
-	log.Println("The lifecycle's setting of " + bucketName + " has been changed.")
+
+	//log.Println("The lifecycle's setting of " + bucketName + " has been changed.")
 	return
 }
 
-// Get the details od this bucket's lifecycle
+// 	Get the details od this bucket's lifecycle.
+//	获得Bucket的生命周期设置。
 /*
  *	Example:
- *	lfc,err := c.GetBucketLifecycle(bucketName)
+ *	lfc, err := c.GetBucketLifecycle(bucketName)
  */
 func (c *Client) GetBucketLifecycle(bucketName string) (lfc types.LifecycleConfiguration, err error) {
 	cc := c.CClient
@@ -95,15 +99,17 @@ func (c *Client) GetBucketLifecycle(bucketName string) (lfc types.LifecycleConfi
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &lfc)
-	if err == nil {
-		// log.Println("You have got the lifecycle's setting of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	// log.Println("You have got the lifecycle's setting of " + bucketName + ".")
 	return
 }

@@ -6,17 +6,18 @@
 package object
 
 import (
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io/ioutil"
+	"log"
 	"strconv"
 	"strings"
 )
 
 // 	Get an object.
+//	获得一个Object的信息。
 /*
- *	obytes,err := c.GetObject(objectPath, rangeStart(form 0), rangeEnd(from 0 and it is larger than rangeStart))
+ *	obytes, err := c.GetObject(objectPath, rangeStart(form 0), rangeEnd(from 0 and it is larger than rangeStart))
  *	If you want the whole file,
  *			rangeStart:	default 	-1,
  *			rangeEnd:	default 	-1.
@@ -44,12 +45,14 @@ func (c *Client) GetObject(objectPath string, rangeStart, rangeEnd int) (obytes 
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 && resp.StatusCode != 206 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	obytes = body
-	//fmt.Println("You have got the details of this object(" + objectPath + ").")
+	if resp.StatusCode != 200 && resp.StatusCode != 206 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	} else {
+		obytes = body
+	}
+
+	//log.Println("You have got the details of this object(" + objectPath + ").")
 	return
 }

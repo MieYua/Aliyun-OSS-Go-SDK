@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function ListMultipartUpload.
-// 列出未上传的Part的返回XML解析结果。
+//	The analysis of response's XML part of function ListMultipartUpload.
+//	列出未上传的Part的返回XML解析结果。
 type ListMultipartUploadResult struct {
 	Bucket             string       // Bucket名称
 	KeyMarker          string       // 起始Object位置

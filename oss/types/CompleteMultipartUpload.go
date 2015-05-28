@@ -5,8 +5,8 @@
 
 package types
 
-// The list of preparing for function CompleteMultipartUpload.
-// 完成Multipart Upload的存放容器。
+//	The list of preparing for function CompleteMultipartUpload.
+//	完成Multipart Upload的存放容器。
 type CompleteMultipartUpload struct {
 	Part []Part
 }

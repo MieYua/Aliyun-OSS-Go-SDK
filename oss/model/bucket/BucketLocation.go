@@ -7,16 +7,17 @@ package bucket
 
 import (
 	"encoding/xml"
-	//"errors"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
-	//"log"
+	"log"
 )
 
 // 	Get the location of this bucket's endpoint.
+//	获得Bucket的节点地址。
 /*
  *	Example:
- *	lc,err := GetBucketLocation(bucketName)
+ *	lc, err := GetBucketLocation(bucketName)
  */
 func (c *Client) GetBucketLocation(bucketName string) (lc types.LocationConstraint, err error) {
 	cc := c.CClient
@@ -30,15 +31,17 @@ func (c *Client) GetBucketLocation(bucketName string) (lc types.LocationConstrai
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &lc)
-	if err == nil {
-		// log.Println("You have got the region's location of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	// log.Println("You have got the region's location of " + bucketName + ".")
 	return
 }

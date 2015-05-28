@@ -5,8 +5,8 @@
 
 package types
 
-// The informations of the parts which haven't been uploaded.
-// 未上传的Part信息。
+//	The informations of the parts which haven't been uploaded.
+//	未上传的Part信息。
 type UploadPart struct {
 	Key       string // Object名称
 	UploadId  string // 对应UploadId

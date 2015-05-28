@@ -5,8 +5,8 @@
 
 package types
 
-// Object's struct.
-// Object属性。
+//	Object's struct.
+//	Object属性。
 type Object struct {
 	Key          string // 访问路径地址
 	LastModified string // 最后一次提交

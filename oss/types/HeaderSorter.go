@@ -5,8 +5,8 @@
 
 package types
 
-// The container for function SignHeader.
-// 用于SignHeader的字典排序存放容器。
+//	The container for function SignHeader.
+//	用于SignHeader的字典排序存放容器。
 type HeaderSorter struct {
 	Keys []string
 	Vals []string

@@ -9,8 +9,8 @@ import (
 	"encoding/xml"
 )
 
-// The request's XML part of function PutBucketLogging.
-// 修改Bucket的logging属性XML请求部分。
+//	The request's XML part of function PutBucketLogging.
+//	修改Bucket的logging属性XML请求部分。
 type LoggingXML struct {
 	XMLName        xml.Name `xml:"BucketLoggingStatus"`
 	LoggingEnabled LoggingEnabled

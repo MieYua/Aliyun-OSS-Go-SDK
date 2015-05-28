@@ -7,26 +7,25 @@ package object
 
 import (
 	"bytes"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/common"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 )
 
-//	Import common.Client.
-/*
- *
- */
+//	Convert common.Client to Client.
+//	将common包的Client转换成Client类。
 type Client struct {
 	CClient *common.Client
 }
 
 // 	Create a new object to a bucket.
+//	新建一个Object。
 /*
  *	Example:
  *	err := c.PutObject(objectPath, filePath)
@@ -53,19 +52,20 @@ func (c *Client) PutObject(objectPath, filePath string) (err error) {
 	params := map[string]string{}
 	params[consts.HH_CONTENT_TYPE] = contentType
 
-	_, err = cc.DoRequest("PUT", objectPath, objectPath, params, buffer)
+	resp, err := cc.DoRequest("PUT", objectPath, objectPath, params, buffer)
 	if err != nil {
 		return
 	}
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	//fmt.Println("A new object(" + objectPath + ") has been put into this bucket.")
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
+
+	//log.Println("A new object(" + objectPath + ") has been put into this bucket.")
 	return
 }

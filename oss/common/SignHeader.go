@@ -18,9 +18,12 @@ import (
 	"strings"
 )
 
+//	Rename types.HeaderSorter to HeaderSorter.
+//	将types包的HeaderSorter命名成HeaderSorter类。
 type HeaderSorter types.HeaderSorter
 
 // 	Generate the right Authorization by this canonicalizedResource.
+//	生成签名方法（直接设置请求的Header）。
 /*
  *	Example:
  *	c.SignHeader(req, "/")

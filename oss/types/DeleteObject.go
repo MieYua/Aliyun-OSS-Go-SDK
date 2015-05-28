@@ -5,8 +5,8 @@
 
 package types
 
-// Delete Object.
-// 删除的Object信息。
+//	Delete Object.
+//	删除的Object信息。
 type DeleteObject struct {
 	Key string // Object名称
 }

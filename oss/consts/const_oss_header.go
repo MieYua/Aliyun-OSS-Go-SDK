@@ -6,8 +6,8 @@
 package consts
 
 const (
-	// OSS Header
-	// OSS头标签
+	//	OSS Header.
+	//	OSS头标签。
 	OH_OSS_PREFIX                             string = "x-oss-"
 	OH_OSS_USER_METADATA_PREFIX                      = "x-oss-meta-"
 	OH_OSS_CANNED_ACL                                = "x-oss-acl"

@@ -17,6 +17,7 @@ import (
 )
 
 // 	Change the setting of this bukcet's cors.
+//	修改Bucket的CORS设置。
 /*
  *	Example:
  *	corsRule1 := (types)CORSRule{
@@ -67,13 +68,15 @@ func (c *Client) PutBucketCORS(bucketName string, corsRules []types.CORSRule) (e
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
-	log.Println("The CORS's setting of " + bucketName + " has been changed.")
 
+	//log.Println("The CORS's setting of " + bucketName + " has been changed.")
 	return
 }
 
-// Get the cors' setting of this bucket
+// 	Get the cors' setting of this bucket.
+//	获得Bucket的CORS设置。
 /*
  *	Example:
  *	corsc, err := c.GetBucketCors(bucketName)
@@ -90,15 +93,17 @@ func (c *Client) GetBucketCORS(bucketName string) (corsc types.CORSConfiguration
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &corsc)
-	if err == nil {
-		// log.Println("You have got the CORS's setting of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	// log.Println("You have got the CORS's setting of " + bucketName + ".")
 	return
 }

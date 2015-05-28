@@ -16,7 +16,8 @@ import (
 	"net/http"
 )
 
-// 	Change the referers of this bucket.
+// 	Change the referers of this bucket(default: allow empty referer).
+//	修改Bucket的访问白名单（不设置默认为空）。
 /*
  *	Example:
  *	err := PutBucketReferer(bucketName, []string{(consts)REFERER,or other "http(s)://*.*.*"'s addresses})
@@ -60,16 +61,18 @@ func (c *Client) PutBucketReferer(bucketName string, referers []string) (err err
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
 
-	log.Println("The referer's setting of " + bucketName + " has been changed.")
+	//log.Println("The referer's setting of " + bucketName + " has been changed.")
 	return
 }
 
-//	Get the referers' addresses of this bucket
+//	Get the referers' addresses of this bucket.
+//	获得Bucket的白名单地址。
 /*
  *	Example:
- *	rc,err := c.GetBucektReferer(bucketName)
+ *	rc, err := c.GetBucektReferer(bucketName)
  */
 func (c *Client) GetBucketReferer(bucketName string) (rc types.RefererConfiguration, err error) {
 	cc := c.CClient
@@ -83,17 +86,17 @@ func (c *Client) GetBucketReferer(bucketName string) (rc types.RefererConfigurat
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
-
-	err = xml.Unmarshal(body, &rc)
-
-	if err == nil {
-		// log.Println("You have got the referer's setting of " + bucketName + ".")
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
 	}
 
+	err = xml.Unmarshal(body, &rc)
+	if err != nil {
+		return
+	}
+
+	// log.Println("You have got the referer's setting of " + bucketName + ".")
 	return
 }

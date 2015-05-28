@@ -14,9 +14,10 @@ import (
 )
 
 // 	Get the details of this bucket with some parameters.
+//	获得Bucket下筛选后所有的object的列表。
 /*
  *	Example:
- *	lbr(ObjectList),err := c.GetBucket(bucketName, prefix, marker, delimiter, maxkeys)
+ *	lbr(ObjectList), err := c.GetBucket(bucketName, prefix, marker, delimiter, maxkeys)
  *	prefix: Choose that contain this string (default:"")
  *	marker: Return after this letter (default:"")
  *	delimiter: Common Prefixes (default:"")
@@ -64,9 +65,12 @@ func (c *Client) GetBucket(bucketName, prefix, marker, delimiter, maxkeys string
 		log.Println(string(body))
 		return
 	}
+
 	err = xml.Unmarshal(body, &lbr)
-	if err == nil {
-		log.Println("You have got all the objects' settings of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	//log.Println("You have got all the objects' settings of " + bucketName + ".")
 	return
 }

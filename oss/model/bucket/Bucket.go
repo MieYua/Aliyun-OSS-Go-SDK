@@ -18,15 +18,14 @@ import (
 	"strings"
 )
 
-//	Import common.Client.
-/*
- *
- */
+//	Convert common.Client to Client.
+//	将common包的Client转换成Client类。
 type Client struct {
 	CClient *common.Client
 }
 
 // 	Bucket: Create a new bucket.
+// 	新建Bucket方法。
 /*
  *	Example:
  *	err := PutBucket(bucketName)
@@ -68,7 +67,9 @@ func (c *Client) PutBucket(bucketName string) (err error) {
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
-	log.Println("A new bucket(" + bucketName + ") has been created.")
+
+	//log.Println("A new bucket(" + bucketName + ") has been created.")
 	return
 }

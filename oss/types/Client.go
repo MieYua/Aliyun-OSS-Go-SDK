@@ -10,8 +10,8 @@ import (
 	"sync"
 )
 
-// Client's struct.
-// 客户端属性。
+//	Client's struct.
+//	客户端属性。
 type Client struct {
 	AccessKeyId     string       // 访问Id
 	AccessKeySecret string       // 访问密钥

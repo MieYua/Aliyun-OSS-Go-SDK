@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function InitiateMultipartUpload.
-// 初始化Multipart Upload返回XML解析结果。
+//	The analysis of response's XML part of function InitiateMultipartUpload.
+//	初始化Multipart Upload返回XML解析结果。
 type InitiateMultipartUploadResult struct {
 	Bucket   string // Bucket名称
 	Key      string // 上传Object名称

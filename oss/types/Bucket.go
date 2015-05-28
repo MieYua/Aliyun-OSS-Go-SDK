@@ -5,8 +5,8 @@
 
 package types
 
-// Bucket's struct.
-// Bucket属性。
+//	Bucket's struct.
+//	Bucket属性。
 type Bucket struct {
 	Location     string `xml:"Location"`     // Bucket的节点地址
 	Name         string `xml:"Name"`         // Bucket的名称

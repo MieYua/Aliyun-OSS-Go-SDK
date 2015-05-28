@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function GetBucketWebsite.
-// GetBucketWebsite返回值的XML解析结果。
+//	The analysis of response's XML part of function GetBucketWebsite.
+//	GetBucketWebsite返回值的XML解析结果。
 type WebsiteConfiguration struct {
 	IndexDocument IndexDocument
 	ErrorDocument ErrorDocument

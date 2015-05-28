@@ -6,8 +6,8 @@
 package consts
 
 const (
-	// Http Header
-	// Http头标签
+	//	Http Header.
+	//	Http头标签。
 	HH_AUTHORIZATION       string = "Authorization"
 	HH_CACHE_CONTROL              = "Cache-Control"
 	HH_CONTENT_DISPOSITION        = "Content-Disposition"

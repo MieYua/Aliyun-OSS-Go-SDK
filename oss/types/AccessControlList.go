@@ -5,8 +5,8 @@
 
 package types
 
-// Access control list.
-// 访问权限。
+//	Access control list.
+//	访问权限。
 type AccessControlList struct {
 	Grant string
 }

@@ -7,18 +7,19 @@ package multipart
 
 import (
 	"bytes"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io"
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 )
 
 // 	Upload a new file part.
+//	上传一个新part。
 /*
  *	Example:
  *	isLastPart, endPoint, cmuNew, err := c.UploadPart(imur, initobjectPath, filePath, cmu, startPoint, cutLength, partNumber)
@@ -76,20 +77,21 @@ func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObject
 		return
 	}
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	newPart := types.Part{}
 	newPart.ETag = resp.Header.Get(consts.HH_ETAG)
 	newPart.PartNumber = partNumber
 	cmuNew.Part = append(cmu.Part, newPart)
-	//fmt.Println("Part number " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been uploaded.")
+
+	//log.Println("Part number " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been uploaded.")
 	return
 
 }

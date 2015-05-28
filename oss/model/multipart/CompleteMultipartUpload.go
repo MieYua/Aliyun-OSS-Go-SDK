@@ -8,14 +8,15 @@ package multipart
 import (
 	"bytes"
 	"encoding/xml"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 	"strings"
 )
 
 // 	Complete to upload all the multiparts.
+//	完成已上传完全的multiparts。
 /*
  *	Example:
  *	cmur, err := CompleteMultipartUpload(cmu, initObjectPath, uploadId)
@@ -40,22 +41,25 @@ func (c *Client) CompleteMultipartUpload(cmu types.CompleteMultipartUpload, init
 	buffer := new(bytes.Buffer)
 	buffer.Write(bs)
 
-	_, err = cc.DoRequest("POST", reqStr, reqStr, nil, buffer)
+	resp, err := cc.DoRequest("POST", reqStr, reqStr, nil, buffer)
 	if err != nil {
 		return
 	}
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
-	//err = xml.Unmarshal(body, &cmur)
-	// if err == nil {
-	// 	fmt.Println("The object(" + initObjectPath + ") has been uploaded successfully.")
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
+
+	err = xml.Unmarshal(body, &cmur)
+	if err != nil {
+		return
+	}
+
+	//log.Println("The object(" + initObjectPath + ") has been uploaded successfully.")
 	return
 }

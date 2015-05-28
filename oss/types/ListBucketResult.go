@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function GetBucket(List Object).
-// GetBucket(List Object)返回值的XML解析结果。
+//	The analysis of response's XML part of function GetBucket(List Object).
+//	GetBucket(List Object)返回值的XML解析结果。
 type ListBucketResult struct {
 	Name        string   // Bucket名称
 	Prefix      string   // 查询前缀，默认为空查询所有

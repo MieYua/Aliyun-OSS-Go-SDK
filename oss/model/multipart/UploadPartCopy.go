@@ -7,16 +7,17 @@ package multipart
 
 import (
 	"encoding/xml"
-	//"errors"
-	//"fmt"
+	"errors"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
+	"log"
 	"strconv"
 	"strings"
 )
 
 // 	Copy a file of the bucket to upload a part.
+//	拷贝Bucket内的文件用于上传part。
 /*
  *	Example:
  *	var length int64 = 0
@@ -73,18 +74,19 @@ func (c *Client) UploadPartCopy(imur types.InitiateMultipartUploadResult, initOb
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	fmt.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &cpr)
 	newPart := types.Part{}
 	newPart.ETag = cpr.ETag
 	newPart.PartNumber = partNumber
 	cmuNew.Part = append(cmu.Part, newPart)
-	//fmt.Println("Partnumber " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been copied.")
+
+	//log.Println("Partnumber " + strconv.Itoa(partNumber) + " of the " + initObjectPath + " has been copied.")
 	return
 
 }

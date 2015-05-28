@@ -6,13 +6,14 @@
 package object
 
 import (
-	//"errors"
-	//"fmt"
-	//"io/ioutil"
+	"errors"
+	"io/ioutil"
+	"log"
 	"strings"
 )
 
 // 	Delete an object.
+//	删除Object。
 /*
  * 	Example:
  * 	err := c.DeleteObject(objectPath)
@@ -32,17 +33,19 @@ func (c *Client) DeleteObject(objectPath string) (err error) {
 	if strings.HasPrefix(objectPath, "/") == false {
 		objectPath = "/" + objectPath
 	}
-	_, err = cc.DoRequest("DELETE", objectPath, objectPath, nil, nil)
+	resp, err := cc.DoRequest("DELETE", objectPath, objectPath, nil, nil)
 	if err != nil {
 		return
 	}
 
-	// if resp.StatusCode != 204 {
-	// 	err = errors.New(resp.Status)
-	// 	body, _ := ioutil.ReadAll(resp.Body)
-	// 	defer resp.Body.Close()
-	// 	fmt.Println(string(body))
-	// }
-	//fmt.Println("The (" + objectPath + ") has been deleted.")
+	if resp.StatusCode != 204 {
+		err = errors.New(resp.Status)
+		body, _ := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		log.Println(string(body))
+		return
+	}
+
+	//log.Println("The (" + objectPath + ") has been deleted.")
 	return
 }

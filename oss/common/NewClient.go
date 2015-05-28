@@ -6,16 +6,18 @@
 package common
 
 import (
-	//"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"net/http"
 )
 
+//	Convert types.Client to Client.
+//	将types包的Client转换成Client类。
 type Client struct {
 	TClient *types.Client
 }
 
 // 	Create a new client.
+//	新建客户端。
 /*
  *	Example:
  *	c := NewClient((Const)ENDPOINT, "your oss's accessKeyId", "your oss's accessKeySecret")
@@ -27,7 +29,6 @@ func NewClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 		AccessKeySecret: accessKeySecret,
 		HttpClient:      http.DefaultClient,
 	}
-	//fmt.Println("This client is ready.")
 	c := Client{}
 	c.TClient = client
 	return &c

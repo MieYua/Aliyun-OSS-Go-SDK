@@ -17,6 +17,7 @@ import (
 )
 
 // 	Change the website defaults of this bucket.
+//	修改Bucket的默认首页以及错误页。
 /*
  *	Example:
  *	err := PutBucketWebsite(bucketName, indexDocument, errorDocument)
@@ -64,15 +65,18 @@ func (c *Client) PutBucketWebsite(bucketName, indexDocument, errorDocument strin
 		body, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
 		log.Println(string(body))
+		return
 	}
-	log.Println("The website's setting of " + bucketName + " has been changed.")
+
+	//log.Println("The website's setting of " + bucketName + " has been changed.")
 	return
 }
 
-// 	Get the websites' default of this bucket
+// 	Get the websites' default of this bucket.
+//	获得Bucket的默认首页以及错误页。
 /*
  *	Example:
- *	wc,err := c.GetBucketWebsite(bucketName)
+ *	wc, err := c.GetBucketWebsite(bucketName)
  */
 func (c *Client) GetBucketWebsite(bucketName string) (wc types.WebsiteConfiguration, err error) {
 	cc := c.CClient
@@ -86,15 +90,17 @@ func (c *Client) GetBucketWebsite(bucketName string) (wc types.WebsiteConfigurat
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// if resp.StatusCode != 200 {
-	// 	err = errors.New(resp.Status)
-	// 	log.Println(string(body))
-	// 	return
-	// }
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		log.Println(string(body))
+		return
+	}
 
 	err = xml.Unmarshal(body, &wc)
-	if err == nil {
-		// log.Println("You have got the website's setting of " + bucketName + ".")
+	if err != nil {
+		return
 	}
+
+	// log.Println("You have got the website's setting of " + bucketName + ".")
 	return
 }

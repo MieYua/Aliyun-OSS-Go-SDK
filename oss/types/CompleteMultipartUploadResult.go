@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function CompleteMultipartUpload.
-// 完成Multipart Upload的返回XML解析结果。
+//	The analysis of response's XML part of function CompleteMultipartUpload.
+//	完成Multipart Upload的返回XML解析结果。
 type CompleteMultipartUploadResult struct {
 	Location string
 	Bucket   string

@@ -5,8 +5,8 @@
 
 package types
 
-// The analysis of response's XML part of function UploadPartCopy.
-// 拷贝Part用于Multipart Upload的返回XML解析结果。
+//	The analysis of response's XML part of function UploadPartCopy.
+//	拷贝Part用于Multipart Upload的返回XML解析结果。
 type CopyPartResult struct {
 	LastModified string
 	ETag         string

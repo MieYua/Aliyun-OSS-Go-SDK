@@ -56,6 +56,7 @@
 * <strong>Add Chinese annotations of Ver. 3.3;</strong>
 * <strong>Add some errors' returns of Ver. 3.3;</strong>
 * <strong>Add new endpoint(USWest1);</strong>
+* <strong>Delete PutObjectWeb&UploadPartWeb of Ver. 3.2;</strong>
 * <strong>Add CleanBucket of Ver. 3.3.</strong>
 
 ---

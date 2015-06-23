@@ -37,7 +37,7 @@ type Client struct {
 //	初始化客户端。
 /*
  *	Example:
- *	c := InitiateClient((consts)ENDPOINT, accessKeyId, accessKeySecret)
+ *	c := InitiateClient((consts)endPoint, accessKeyId, accessKeySecret)
  */
 func InitiateClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 	cc := common.NewClient(endPoint, accessKeyId, accessKeySecret)
@@ -502,7 +502,7 @@ func (c *Client) PostObject(bucketName, filePath string, tempFileName string) (e
 //	用Multipart Upload方式上传文件。
 /*
  *	Example:
- *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", 1024000)
+ *	cmur, err, lastPoint, uploadId := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", 1024000)
  */
 func (c *Client) MultipartUpload(objectPath, filePath string, chunkSize int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
 	mc := c.MClient
@@ -524,7 +524,7 @@ func (c *Client) MultipartUpload(objectPath, filePath string, chunkSize int64) (
 // 	用Multipart Upload方式继续上传文件。
 /*
  *	Example:
- *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", breakPoint, 1024000)
+ *	cmu, err, lastPoint, uploadIdCon := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", breakPoint, 1024000)
  */
 func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint, chunkSize int64, uploadId string) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadIdCon string) {
 	mc := c.MClient
@@ -555,7 +555,7 @@ func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint
 // 	用Multipart Upload Copy方式上传文件。
 /*
  *	Example:
- *	cmur, err := c.MultipartUploadCopy(bucketName, "test_muc.pdf", "test.pdf", 1024000)
+ *	cmu, err, lastPoint, uploadId := c.MultipartUploadCopy(bucketName, "test_muc.pdf", "test.pdf", 1024000)
  */
 func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, chunkSize int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
 	mc := c.MClient
@@ -587,7 +587,7 @@ func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, ch
 // 	完成指定UploadId的Multipart Upload上传。
 /*
  *	Example:
- *	err := c.CompleteMultipartUpload(cmu, initObjectPath, uploadId)
+ *	cmur, err := c.CompleteMultipartUpload(cmu, initObjectPath, uploadId)
  */
 func (c *Client) CompleteMultipartUpload(cmu types.CompleteMultipartUpload, initObjectPath, uploadId string) (cmur types.CompleteMultipartUploadResult, err error) {
 	mc := c.MClient

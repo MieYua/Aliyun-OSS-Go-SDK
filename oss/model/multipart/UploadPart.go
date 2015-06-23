@@ -22,12 +22,12 @@ import (
 //	上传一个新part。
 /*
  *	Example:
- *	isLastPart, endPoint, cmuNew, err := c.UploadPart(imur, initobjectPath, filePath, cmu, startPoint, cutLength, partNumber)
+ *	isLastPart, end, cmuNew, err := c.UploadPart(imur, initobjectPath, filePath, cmu, start, chunkSize, partNumber)
  *
- *	cutLength must be larger than 102400
- *	If cutLength is smaller than 102400, cutLength will be 102400
+ *	chunkSize must be larger than 102400
+ *	If chunkSize is smaller than 102400, chunkSize will be 102400
  */
-func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObjectPath, filePath string, cmu types.CompleteMultipartUpload, startPoint, cutLength int64, partNumber int) (isLastPart bool, endPoint int64, cmuNew types.CompleteMultipartUpload, err error) {
+func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObjectPath, filePath string, cmu types.CompleteMultipartUpload, start, chunkSize int64, partNumber int) (isLastPart bool, end int64, cmuNew types.CompleteMultipartUpload, err error) {
 	cc := c.CClient
 
 	file, err := os.Open(filePath)
@@ -45,24 +45,24 @@ func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObject
 		partNumber = 1
 	}
 
-	if cutLength < 102400 {
-		cutLength = 102400
+	if chunkSize < 102400 {
+		chunkSize = 102400
 	}
 
-	if length < (startPoint + cutLength - 1) {
-		cutLength = length - startPoint
-		endPoint = length - 1
+	if length < (start + chunkSize - 1) {
+		chunkSize = length - start
+		end = length - 1
 		isLastPart = true
 	} else {
-		endPoint = startPoint + cutLength
+		end = start + chunkSize
 		isLastPart = false
 	}
 
-	bufCutFile := make([]byte, cutLength)
+	bufCutFile := make([]byte, chunkSize)
 
-	file.ReadAt(bufCutFile, startPoint)
+	file.ReadAt(bufCutFile, start)
 	var i int64 = 0
-	for i = 0; i < cutLength; i++ {
+	for i = 0; i < chunkSize; i++ {
 		buffer.WriteByte(bufCutFile[i])
 	}
 

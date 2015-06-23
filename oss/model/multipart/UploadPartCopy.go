@@ -30,11 +30,11 @@ import (
  *				length = int64(size)
  *			}
  *		}
- *	isLastPart, endPoint, cpr, cmu, err = c.UploadPartCopy(imur, initObjectPath, "xxxx/test.pdf", cmu, endPoint, 1048576(1MB), length, i)
+ *	isLastPart, end, cpr, cmu, err = c.UploadPartCopy(imur, initObjectPath, "xxxx/test.pdf", cmu, end, 1048576(1MB), length, i)
  *
  *	If file size is smaller than 1GB, please use function CopyObject.
  */
-func (c *Client) UploadPartCopy(imur types.InitiateMultipartUploadResult, initObjectPath, copySrc string, cmu types.CompleteMultipartUpload, startPoint, cutLength, length int64, partNumber int) (isLastPart bool, endPoint int64, cpr types.CopyPartResult, cmuNew types.CompleteMultipartUpload, err error) {
+func (c *Client) UploadPartCopy(imur types.InitiateMultipartUploadResult, initObjectPath, copySrc string, cmu types.CompleteMultipartUpload, start, chunkSize, length int64, partNumber int) (isLastPart bool, end int64, cpr types.CopyPartResult, cmuNew types.CompleteMultipartUpload, err error) {
 	cc := c.CClient
 
 	if strings.HasPrefix(copySrc, "/") == false {
@@ -48,23 +48,23 @@ func (c *Client) UploadPartCopy(imur types.InitiateMultipartUploadResult, initOb
 		partNumber = 1
 	}
 
-	if cutLength < 102400 {
-		cutLength = 102400 // min 100KB
+	if chunkSize < 102400 {
+		chunkSize = 102400 // min 100KB
 	}
 
-	if length <= (startPoint + cutLength) {
-		cutLength = length - startPoint
-		endPoint = length - 1
+	if length <= (start + chunkSize) {
+		chunkSize = length - start
+		end = length - 1
 		isLastPart = true
 	} else {
-		endPoint = startPoint + cutLength
+		end = start + chunkSize
 		isLastPart = false
 	}
 
 	reqStr := initObjectPath + "?partNumber=" + strconv.Itoa(partNumber) + "&uploadId=" + imur.UploadId
 
 	params := map[string]string{consts.OH_COPY_OBJECT_SOURCE: copySrc}
-	params[consts.OH_COPY_SOURCE_RANGE] = "bytes=" + strconv.Itoa(int(startPoint)) + "-" + strconv.Itoa(int(startPoint+cutLength-1))
+	params[consts.OH_COPY_SOURCE_RANGE] = "bytes=" + strconv.Itoa(int(start)) + "-" + strconv.Itoa(int(start+chunkSize-1))
 
 	resp, err := cc.DoRequest("PUT", reqStr, reqStr, params, nil)
 	if err != nil {

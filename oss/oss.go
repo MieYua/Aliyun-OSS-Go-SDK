@@ -19,7 +19,9 @@ import (
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/object"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/service"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
+	"io"
 	"net/http"
+	"os"
 )
 
 //	Type: Clent.
@@ -395,7 +397,27 @@ func (c *Client) OptionObject(objectPath, accessControlRequestMethod, accessCont
  */
 func (c *Client) CreateObject(objectPath, filePath string) (err error) {
 	oc := c.OClient
-	err = oc.PutObject(objectPath, filePath)
+	fh, err := os.Open(filePath)
+	if err != nil {
+		return
+	}
+	defer fh.Close()
+	return oc.PutObjectFromReader(objectPath, fh)
+}
+
+// 	Object: CreateObjectFromReader.
+// 	Create a new object to a bucket.
+// 	在Bucket中新建一个Object。
+/*
+ *	Example:
+ *	err := c.CreateObjectFromReader(objectPath, reader)
+ *	objectPath:
+ *		Can be just a name of file(bucketName/fileName),
+ *		Can be names of filepacks(bucketName/filePack/../fileName).
+ */
+func (c *Client) CreateObjectFromReader(objectPath string, reader io.Reader) (err error) {
+	oc := c.OClient
+	err = oc.PutObjectFromReader(objectPath, reader)
 	return
 }
 
@@ -515,6 +537,31 @@ func (c *Client) MultipartUpload(objectPath, filePath string, chunkSize int64) (
 		if err != nil {
 			return
 		}
+	}
+	return
+}
+
+//	Multipart Upload: MultipartUploadFromReader.
+//	Upload a file by multipart upload.
+//	用Multipart Upload方式上传文件。
+/*
+ *	Example:
+ *	cmur, err := c.MultipartUploadFromReader(bucketName+"/test_mu.pdf", "test.pdf", 1024000)
+ */
+func (c *Client) MultipartUploadFromReader(objectPath string, reader io.Reader, chunkSize int64) (cmu types.CompleteMultipartUpload, err error, totalWritten int64, uploadId string) {
+	mc := c.MClient
+	initObjectPath, imur, _ := mc.InitiateMultipartUpload(objectPath)
+	isLastPart := false
+	uploadId = imur.UploadId
+	totalWritten = 0
+	var written int64
+	for i := 1; isLastPart == false; i++ {
+		isLastPart, cmu, written, err = mc.UploadPartFromReader(imur, initObjectPath, reader, cmu, chunkSize, i)
+		if err != nil {
+			return
+		}
+		totalWritten += written
+
 	}
 	return
 }

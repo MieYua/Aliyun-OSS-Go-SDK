@@ -28,18 +28,41 @@ import (
  *	If chunkSize is smaller than 102400, chunkSize will be 102400
  */
 func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObjectPath, filePath string, cmu types.CompleteMultipartUpload, start, chunkSize int64, partNumber int) (isLastPart bool, end int64, cmuNew types.CompleteMultipartUpload, err error) {
-	cc := c.CClient
 
 	file, err := os.Open(filePath)
 	if err != nil {
 		return
 	}
 	defer file.Close()
-	bufferLength := new(bytes.Buffer)
-	io.Copy(bufferLength, file)
-	buffer := new(bytes.Buffer)
+	stat, err := file.Stat()
+	if err != nil {
+		return
+	}
+	fileSize := stat.Size()
+	if start >= fileSize {
+		err = errors.New("invalid argument")
+		return
+	}
+	_, err = file.Seek(start, 0)
+	if err != nil {
+		return
+	}
+	var written int64
+	isLastPart, cmuNew, written, err = c.UploadPartFromReader(imur, initObjectPath, file, cmu, chunkSize, partNumber)
+	end = start + written
+	return
+}
 
-	length := int64(bufferLength.Len())
+// 	Upload a new file part.
+//	上传一个新part。
+/*
+ *	Example:
+ *	isLastPart, cmuNew,written, err := c.UploadPart(imur, initobjectPath, reader, cmu, chunkSize, partNumber)
+ *
+ *	chunkSize must be larger than 102400
+ *	If chunkSize is smaller than 102400, chunkSize will be 102400
+ */
+func (c *Client) UploadPartFromReader(imur types.InitiateMultipartUploadResult, initObjectPath string, reader io.Reader, cmu types.CompleteMultipartUpload, chunkSize int64, partNumber int) (isLastPart bool, cmuNew types.CompleteMultipartUpload, written int64, err error) {
 
 	if partNumber < 1 {
 		partNumber = 1
@@ -49,23 +72,20 @@ func (c *Client) UploadPart(imur types.InitiateMultipartUploadResult, initObject
 		chunkSize = 102400
 	}
 
-	if length < (start + chunkSize - 1) {
-		chunkSize = length - start
-		end = length - 1
-		isLastPart = true
+	buffer := new(bytes.Buffer)
+	written, err = io.CopyN(buffer, reader, chunkSize)
+	if err != nil {
+		if err != io.EOF {
+			return
+		} else {
+			isLastPart = true
+			err = nil
+		}
 	} else {
-		end = start + chunkSize
 		isLastPart = false
 	}
 
-	bufCutFile := make([]byte, chunkSize)
-
-	file.ReadAt(bufCutFile, start)
-	var i int64 = 0
-	for i = 0; i < chunkSize; i++ {
-		buffer.WriteByte(bufCutFile[i])
-	}
-
+	cc := c.CClient
 	if strings.HasPrefix(initObjectPath, "/") == false {
 		initObjectPath = "/" + initObjectPath
 	}

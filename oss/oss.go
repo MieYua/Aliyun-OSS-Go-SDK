@@ -504,14 +504,14 @@ func (c *Client) PostObject(bucketName, filePath string, tempFileName string) (e
  *	Example:
  *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", 1024000)
  */
-func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
+func (c *Client) MultipartUpload(objectPath, filePath string, chunkSize int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
 	mc := c.MClient
 	initObjectPath, imur, _ := mc.InitiateMultipartUpload(objectPath)
 	isLastPart := false
 	lastPoint = 0
 	uploadId = imur.UploadId
 	for i := 1; isLastPart == false; i++ {
-		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, initObjectPath, filePath, cmu, lastPoint, cutLength, i)
+		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, initObjectPath, filePath, cmu, lastPoint, chunkSize, i)
 		if err != nil {
 			return
 		}
@@ -526,7 +526,7 @@ func (c *Client) MultipartUpload(objectPath, filePath string, cutLength int64) (
  *	Example:
  *	cmur, err := c.MultipartUpload(bucketName+"/test_mu.pdf", "test.pdf", breakPoint, 1024000)
  */
-func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint, cutLength int64, uploadId string) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadIdCon string) {
+func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint, chunkSize int64, uploadId string) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadIdCon string) {
 	mc := c.MClient
 	lpr, _ := mc.ListParts(objectPath, uploadId)
 	maxPartNumber := 1
@@ -542,7 +542,7 @@ func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint
 	uploadIdCon = uploadId
 	lastPoint = breakPoint
 	for i := maxPartNumber; isLastPart == false; i++ {
-		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, objectPath, filePath, cmu, lastPoint, cutLength, i)
+		isLastPart, lastPoint, cmu, err = mc.UploadPart(imur, objectPath, filePath, cmu, lastPoint, chunkSize, i)
 		if err != nil {
 			return
 		}
@@ -557,7 +557,7 @@ func (c *Client) ContinueMultipartUpload(objectPath, filePath string, breakPoint
  *	Example:
  *	cmur, err := c.MultipartUploadCopy(bucketName, "test_muc.pdf", "test.pdf", 1024000)
  */
-func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cutLength int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
+func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, chunkSize int64) (cmu types.CompleteMultipartUpload, err error, lastPoint int64, uploadId string) {
 	mc := c.MClient
 	initObjectPath, imur, _ := mc.InitiateMultipartUpload(bucketName + "/" + objectPath)
 	isLastPart := false
@@ -573,7 +573,7 @@ func (c *Client) MultipartUploadCopy(bucketName, objectPath, copyPath string, cu
 	}
 	lastPoint = 0
 	for i := 1; isLastPart == false; i++ {
-		isLastPart, lastPoint, _, cmu, err = mc.UploadPartCopy(imur, initObjectPath, bucketName+"/"+copyPath, cmu, lastPoint, cutLength, length, i)
+		isLastPart, lastPoint, _, cmu, err = mc.UploadPartCopy(imur, initObjectPath, bucketName+"/"+copyPath, cmu, lastPoint, chunkSize, length, i)
 		if err != nil {
 			return
 		}

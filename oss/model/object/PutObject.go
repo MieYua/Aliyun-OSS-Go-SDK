@@ -14,7 +14,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -28,12 +27,12 @@ type Client struct {
 //	新建一个Object。
 /*
  *	Example:
- *	err := c.PutObject(objectPath, filePath)
+ *	err := c.PutObjectFromReader(objectPath, reader)
  *	objectPath:
  *			Can be just a name of file(bucketName/fileName),
  *			Can be names of filepacks(bucketName/filepack/../file).
  */
-func (c *Client) PutObject(objectPath, filePath string) (err error) {
+func (c *Client) PutObjectFromReader(objectPath string, reader io.Reader) (err error) {
 	cc := c.CClient
 
 	if strings.HasPrefix(objectPath, "/") == false {
@@ -41,12 +40,7 @@ func (c *Client) PutObject(objectPath, filePath string) (err error) {
 	}
 	buffer := new(bytes.Buffer)
 
-	fh, err := os.Open(filePath)
-	if err != nil {
-		return
-	}
-	defer fh.Close()
-	io.Copy(buffer, fh)
+	io.Copy(buffer, reader)
 
 	contentType := http.DetectContentType(buffer.Bytes())
 	params := map[string]string{}

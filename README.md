@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 3.5 (Released on 150623)</strong>
+* <strong>Ver. 4.0 Unfinished (May be Released on 150717)</strong>
 
 ---
 
@@ -60,7 +60,12 @@
 * Add CleanBucket of Ver. 3.3.
 
 ### Ver. 3.5 (20150623) ###
-* <strong>Rename variables to easily understand(cutLength, startPoint, endPoint to chunkSize, start, end).(by topikachu)</strong>
+* Rename variables to easily understand(cutLength, startPoint, endPoint to chunkSize, start, end).(by topikachu)
+
+### Ver. 4.0 Unfinished (20150715) ###
+* <strong>Add all new consts(OSSHeader&STS);<strong>
+* <strong>Add AppendObject of Ver. 3.5;</strong>
+* <strong>Did not finish STS.</strong>
 
 ---
 

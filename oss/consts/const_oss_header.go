@@ -34,4 +34,6 @@ const (
 	OH_ACCESS_CONTROL_ALLOW_HEADERS                  = "Access-Control-Allow-Headers"
 	OH_ACCESS_CONTROL_EXPOSE_HEADERS                 = "Access-Control-Expose-Headers"
 	OH_ACCESS_CONTROL_MAX_AGE                        = "Access-Control-Max-Age"
+	OH_OSS_HASH_CRC64ECMA                            = "x-oss-hash-ecr64ecma"
+	OH_OSS_NEXT_APPEND_POSITION                      = "x-oss-next-append-position"
 )

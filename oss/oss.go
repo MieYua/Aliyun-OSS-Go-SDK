@@ -5,6 +5,7 @@
  * 	version 1.0 released on 150330
  *	version 2.0 released on 150402
  *	version 3.0 released on 150424
+ *	version 4.0 released on 150715
  */
 
 //	Aliyun OSS Go(Golang) SDK.
@@ -396,6 +397,31 @@ func (c *Client) OptionObject(objectPath, accessControlRequestMethod, accessCont
 func (c *Client) CreateObject(objectPath, filePath string) (err error) {
 	oc := c.OClient
 	err = oc.PutObject(objectPath, filePath)
+	return
+}
+
+// 	Object: AppendObject.
+// 	Append a new object to a bucket.
+// 	在Bucket中追加一个Object。
+/*
+ *	Example:
+ *	nextAppendPosition, err := c.AppendObject(bucketName, fileName, filePath, appendPosition, downloadFileName)
+ *
+ *	URL查询参数还必须包含position，其值指定从何处进行追加。首次追加操作的position必须为
+0，后续追加操作的position是Object的当前长度。例如，第一次Append Object请求指定
+position值为0，content-length是65536；那么，第二次Append Object需要指定position为
+65536。每次操作成功后，响应头部x-oss-next-append-position也会标明下一次追加的
+position。
+ *	firstAppend---->    								appendPosition = 0 (return nextAppendPosition...)
+ *	followingAppend---->								appendPosition = nextAppendPosition
+ *	downloadFileName为文件下载时显示的文件，为空时默认为上传的文件名。
+ *	此参数需在第一次上传时使用（即appendPosition为0时），之后无效。
+ *	downloadFileName == "" ---->  	 					downloadFile's name = fileName
+ *	downloadFileName != ""&&appendPosition==0 ---->		downloadFile's name = downloadFileName
+*/
+func (c *Client) AppendObject(bucketName, fileName, filePath string, appendPosition int64, downloadFileName string) (nextAppendPosition int64, err error) {
+	oc := c.OClient
+	nextAppendPosition, err = oc.AppendObject(bucketName, fileName, filePath, appendPosition, downloadFileName)
 	return
 }
 

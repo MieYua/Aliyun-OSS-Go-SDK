@@ -23,7 +23,7 @@
 
 ## SDK History ##
 
-### Ver. 4.0 (20150715) ###
+### Ver. 4.0 (20150717) ###
 * <strong>Add all new consts(OSSHeader&STS);
 * Add UserProperty, SecurityToken, TempPrefix, TempDelimiter into tpyes.Client of Ver. 3.5;
 * Change common.DoRequest&model.bucket.BucketList to adapt all new STSTempClient's requests;

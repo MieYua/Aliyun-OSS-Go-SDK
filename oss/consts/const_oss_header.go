@@ -12,6 +12,7 @@ const (
 	OH_OSS_USER_METADATA_PREFIX                      = "x-oss-meta-"
 	OH_OSS_CANNED_ACL                                = "x-oss-acl"
 	OH_STORAGE_CLASS                                 = "x-oss-storage-class"
+	OH_OSS_SECURITY_TOKEN                            = "x-oss-security-token"
 	OH_OSS_VERSION_ID                                = "x-oss-version-id"
 	OH_OSS_SERVER_SIDE_ENCRYPTION                    = "x-oss-server-side-encryption"
 	OH_GET_OBJECT_IF_MODIFIED_SINCE                  = "If-Modified-Since"

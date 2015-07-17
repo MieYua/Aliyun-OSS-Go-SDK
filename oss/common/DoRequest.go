@@ -6,6 +6,7 @@
 package common
 
 import (
+	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
 	"io"
 	"net/http"
@@ -30,6 +31,9 @@ func (c *Client) DoRequest(method, path, canonicalizedResource string, params ma
 	date := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT")
 	req.Header.Set("Date", date)
 	req.Header.Set("Host", c.TClient.Host)
+	if c.TClient.UserProperty == "TempUser" {
+		req.Header.Set(consts.OH_OSS_SECURITY_TOKEN, c.TClient.SecurityToken)
+	}
 
 	if params != nil {
 		for k, v := range params {
@@ -41,7 +45,9 @@ func (c *Client) DoRequest(method, path, canonicalizedResource string, params ma
 		req.Header.Set(consts.HH_CONTENT_LENGTH, strconv.Itoa(int(req.ContentLength)))
 	}
 
+	fmt.Println(req, canonicalizedResource)
 	c.SignHeader(req, canonicalizedResource)
+
 	resp, err = c.TClient.HttpClient.Do(req)
 
 	if method == "POST" {

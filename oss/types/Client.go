@@ -18,6 +18,10 @@ type Client struct {
 	Host            string       // 主机节点
 	HttpClient      *http.Client // http客户端
 	FileIOLocker    sync.Mutex   // 排它锁
+	UserProperty    string       //	用户性质（默认Owner，STS临时用户为TempUser）
+	SecurityToken   string       //	当用户为TempUser时使用
+	TempPrefix      string       //	临时prefix
+	TempDelimiter   string       //	临时delimiter
 }
 
 type ConvertClient interface {

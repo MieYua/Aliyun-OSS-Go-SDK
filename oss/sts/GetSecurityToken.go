@@ -6,45 +6,97 @@
 package sts
 
 import (
-	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
-	"io"
+	"encoding/json"
+	"fmt"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
+	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
 )
 
-// 	Deal with some requests.
-//	处理请求，返回响应结果。
+// 	Get the securityToken.
+//	获得临时安全令牌。
 /*
  *	Example:
- *	securityToken, tempAccessKeyId, tempAccessKeySecret, err := GetSecurityToken(method, path, canonicalizedResource, params, data)
+ *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
  *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
- *
  */
-func GetSecurityToken(durationSeconds int) (securityToken, tempAccessKeyId, tempAccessKeySecret string, err error) {
-	reqUrl := "http://sts.aliyuncs.com"
+func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, allowedActions []string, allowedResources []string, effect string, condition types.Condition, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
+	reqUrl := "https://sts.aliyuncs.com"
 
-	req, _ := http.NewRequest("POST", reqUrl, data)
-	date := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT")
-	req.Header.Set("Date", date)
-	req.Header.Set("Host", c.TClient.Host)
+	policy := new(types.SecurityTokenJSON)
+	policy.Version = "1"
+	statement := types.Statement{}
+	if len(allowedActions) >= 1 {
+		statement.Action = allowedActions
+	}
+	if len(allowedResources) >= 1 {
+		statement.Resource = allowedResources
+	}
+	effectUpper := strings.ToUpper(effect)
+	if effectUpper == "DENY" {
+		statement.Effect = "Deny"
+	} else {
+		statement.Effect = "Allow"
+	}
+	emptyCondition := types.Condition{}
+	if condition != emptyCondition {
+		statement.Condition = condition
+	}
+	policy.Statement = append(policy.Statement, statement)
+	bs, _ := json.Marshal(policy)
+	policyUrl, _ := url.Parse(string(bs))
+	policyEncode := policyUrl.String()
+	policyEncode = strings.Replace(policyEncode, "=", "%3D", -1)
+	policyEncode = strings.Replace(policyEncode, "&", "%26", -1)
 
-	if params != nil {
-		for k, v := range params {
-			req.Header.Set(k, v)
+	postBody := "StsVersion=1&Name=" + username + "&DurationSeconds=" + strconv.Itoa(durationSeconds)
+	postBody = postBody + "&Policy=" + policyEncode + "&Action=GetFederationToken"
+
+	date := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+
+	//	用时间生成随机数
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	randNumber := r.Intn(99999999)
+	if randNumber <= 0 {
+		randNumber = -randNumber
+	}
+
+	postBody = postBody + "&Format=json&Version=2015-04-01&SignatureMethod=HMAC-SHA1&SignatureNonce=" + strconv.Itoa(randNumber) + "&SignatureVersion=1.0&AccessKeyId=" + accessKeyId + "&Timestamp=" + date + "&RegionId=" + regionId
+	postStr, _ := url.ParseQuery(postBody)
+	postEncode := postStr.Encode()
+	signature := STSStringToSign(accessKeySecret, percentEncode(postEncode))
+	postBody = postBody + "&Signature=" + signature
+
+	postStr, _ = url.ParseQuery(postBody)
+	postEncode = postStr.Encode()
+	reqUrl = reqUrl + "/?" + postEncode
+
+	req, _ := http.NewRequest("POST", reqUrl, nil)
+	fmt.Println(req)
+	c := new(http.Client)
+	resp, err := c.Do(req)
+	if err != nil {
+		return
+	} else {
+		b, _ := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		err = json.Unmarshal(b, &securityTokenResponseJSON)
+		if err != nil {
+			return
 		}
 	}
+	return
+}
 
-	if data != nil {
-		req.Header.Set(consts.HH_CONTENT_LENGTH, strconv.Itoa(int(req.ContentLength)))
-	}
-
-	c.SignHeader(req, canonicalizedResource)
-	resp, err = c.TClient.HttpClient.Do(req)
-
-	if method == "POST" {
-		resp.Header.Set(consts.HH_AUTHORIZATION, req.Header.Get(consts.HH_AUTHORIZATION))
-	}
+func percentEncode(str string) (pestr string) {
+	str = strings.Replace(str, "+", "%20", -1)
+	str = strings.Replace(str, "*", "%2A", -1)
+	str = strings.Replace(str, "%7E", "~", -1)
+	pestr = str
 	return
 }

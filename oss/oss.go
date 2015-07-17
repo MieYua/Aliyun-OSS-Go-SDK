@@ -19,6 +19,7 @@ import (
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/multipart"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/object"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/model/service"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/sts"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"net/http"
 )
@@ -33,6 +34,57 @@ type Client struct {
 	SClient *service.Client
 }
 
+// 	STS: GetSecurityToken.
+//	Get the securityToken(Please get again(refresh) before the expiration is coming).
+//	获得临时安全令牌（同一个用户名请在失效前再重新获取，不然容易返回空）。
+/*
+ *	Example(oss_test.go-TestGetSecurityToken):
+ *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
+ *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
+ *	Please see its example in oss_test.go
+ *	实例请见oss_test.go-TestGetSecurityToken。
+ *	失效时间strj.Credentials.Expiration；
+ *	请自行按失效时间刷新。
+ */
+func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, allowedActions []string, allowedResources []string, effect string, condition types.Condition, regionId string) (strj types.SecurityTokenResponseJSON, err error) {
+	return sts.GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
+}
+
+// 	STS: SetSTSCondition.
+//	Set the condition of STS.
+//	设置STS的Condition参数。
+/*
+ *	Example:
+ *	condition := SetSTSCondition(userAgent, currentTime, secureTransport, prefix, delimiter, sourceIp)
+ *	userAgent		指定http useragent头
+ *	currentTime		指定合法的访问时间
+ *	secureTransport	是否是https协议（http或https）
+ *	prefix			用作ListObjects(对应GetBucketInfo)的prefix
+ *	delimiter		用作ListObjects(对应GetBucketInfo)的delimiter
+ *	sourceIp		指定ip网段
+ */
+func SetSTSCondition(userAgent, currentTime, secureTransport, prefix, delimiter, sourceIp string) (condition types.Condition) {
+	if userAgent != "" {
+		condition.StringEquals.UserAgent = userAgent
+	}
+	if currentTime != "" {
+		condition.StringEquals.CurrentTime = currentTime
+	}
+	if secureTransport != "" {
+		condition.StringEquals.SourceTransport = secureTransport
+	}
+	if prefix != "" {
+		condition.StringEquals.Prefix = prefix
+	}
+	if delimiter != "" {
+		condition.StringEquals.Delimiter = delimiter
+	}
+	if sourceIp != "" {
+		condition.IpAddress.SourceIp = sourceIp
+	}
+	return
+}
+
 //	Client: InitiateClient.
 //	Initiate a new client.
 //	初始化客户端。
@@ -42,6 +94,43 @@ type Client struct {
  */
 func InitiateClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 	cc := common.NewClient(endPoint, accessKeyId, accessKeySecret)
+	bc := bucket.Client{}
+	mc := multipart.Client{}
+	oc := object.Client{}
+	sc := service.Client{}
+
+	bc.CClient = cc
+	mc.CClient = cc
+	oc.CClient = cc
+	sc.CClient = cc
+
+	c := Client{
+		BClient: &bc,
+		MClient: &mc,
+		OClient: &oc,
+		SClient: &sc,
+	}
+
+	return &c
+}
+
+//	Client: InitiateTempClient.
+//	Initiate a new tempClient.
+//	初始化临时客户端。
+/*
+ *	Example:
+ *	c := InitiateTempClient((consts)endPoint, tempAccessKeyId, tempAccessKeySecret, securityToken)
+ */
+func InitiateTempClient(endPoint, tempAccessKeyId, tempAccessKeySecret, securityToken, tempPrefix, tempDelimiter string) *Client {
+	cc := common.NewClient(endPoint, tempAccessKeyId, tempAccessKeySecret)
+	cc.TClient.UserProperty = "TempUser"
+	cc.TClient.SecurityToken = securityToken
+	if tempPrefix != "" {
+		cc.TClient.TempPrefix = tempPrefix
+	}
+	if tempDelimiter != "" {
+		cc.TClient.TempDelimiter = tempDelimiter
+	}
 	bc := bucket.Client{}
 	mc := multipart.Client{}
 	oc := object.Client{}
@@ -407,18 +496,17 @@ func (c *Client) CreateObject(objectPath, filePath string) (err error) {
  *	Example:
  *	nextAppendPosition, err := c.AppendObject(bucketName, fileName, filePath, appendPosition, downloadFileName)
  *
- *	URL查询参数还必须包含position，其值指定从何处进行追加。首次追加操作的position必须为
-0，后续追加操作的position是Object的当前长度。例如，第一次Append Object请求指定
-position值为0，content-length是65536；那么，第二次Append Object需要指定position为
-65536。每次操作成功后，响应头部x-oss-next-append-position也会标明下一次追加的
-position。
+ *	URL查询参数还必须包含position，其值指定从何处进行追加。首次追加操作的position必须
+ *	为0，后续追加操作的position是Object的当前长度。例如，第一次Append Object请求指定
+ *	position值为0，content-length是65536；那么，第二次Append Object需要指定position为
+ *	65536。每次操作成功后，响应头部x-oss-next-append-position也会标明下一次追加的position。
  *	firstAppend---->    								appendPosition = 0 (return nextAppendPosition...)
  *	followingAppend---->								appendPosition = nextAppendPosition
  *	downloadFileName为文件下载时显示的文件，为空时默认为上传的文件名。
  *	此参数需在第一次上传时使用（即appendPosition为0时），之后无效。
  *	downloadFileName == "" ---->  	 					downloadFile's name = fileName
  *	downloadFileName != ""&&appendPosition==0 ---->		downloadFile's name = downloadFileName
-*/
+ */
 func (c *Client) AppendObject(bucketName, fileName, filePath string, appendPosition int64, downloadFileName string) (nextAppendPosition int64, err error) {
 	oc := c.OClient
 	nextAppendPosition, err = oc.AppendObject(bucketName, fileName, filePath, appendPosition, downloadFileName)

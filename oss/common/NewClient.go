@@ -31,5 +31,6 @@ func NewClient(endPoint, accessKeyId, accessKeySecret string) *Client {
 	}
 	c := Client{}
 	c.TClient = client
+	c.TClient.UserProperty = "Owner"
 	return &c
 }

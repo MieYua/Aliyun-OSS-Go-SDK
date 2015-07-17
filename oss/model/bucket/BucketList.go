@@ -25,6 +25,10 @@ import (
  */
 func (c *Client) GetBucket(bucketName, prefix, marker, delimiter, maxkeys string) (lbr types.ListBucketResult, err error) {
 	cc := c.CClient
+	if cc.TClient.UserProperty == "TempUser" {
+		prefix = cc.TClient.TempPrefix
+		delimiter = cc.TClient.TempDelimiter
+	}
 
 	reqStr := "/" + bucketName
 	resStr := reqStr

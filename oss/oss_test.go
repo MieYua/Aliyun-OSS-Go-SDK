@@ -24,7 +24,7 @@ const (
 )
 
 func TestAppendObject(t *testing.T) {
-	Convey("获得所有文件Id测试", t, func() {
+	Convey("追加文件测试", t, func() {
 		fmt.Println("")
 		c := InitiateClient(ENDPOINT, ACCESSKEYID, ACCESSKEYSECRET)
 		nextAppendPosition, err := c.AppendObject(TESTBUCKETNAME, TESTFILENAME, TESTFILEPATH, 0, TESTDOWNLOADFILENAME)

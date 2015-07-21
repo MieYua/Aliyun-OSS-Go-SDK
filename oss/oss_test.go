@@ -24,7 +24,7 @@ const (
 )
 
 func TestAppendObject(t *testing.T) {
-	Convey("获得所有文件Id测试", t, func() {
+	Convey("追加文件测试", t, func() {
 		fmt.Println("")
 		c := InitiateClient(ENDPOINT, ACCESSKEYID, ACCESSKEYSECRET)
 		nextAppendPosition, err := c.AppendObject(TESTBUCKETNAME, TESTFILENAME, TESTFILEPATH, 0, TESTDOWNLOADFILENAME)
@@ -79,8 +79,8 @@ func TestInitiateDifferentClient(t *testing.T) {
 			durationSeconds := 3600                                                                            //	有效时长
 			allowedActions := []string{consts.STS_ACTION_BUCKET_GETBUCKET, consts.STS_ACTION_OBJECT_PUTOBJECT} //	允许的操作动作
 			allowedResources := []string{"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME + "/*"}             //	允许操作的bucket
-			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME			---->bucket操作权限
-			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME + "/*"	---->bucket下object操作权限（支持通配符*）
+			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME			---->bucket操作资源
+			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME + "/*"	---->bucket下object操作资源（支持通配符*）
 			effect := "Allow"
 			regionId := "cn-hangzhou"                            //	节点，形式如例子
 			condition := SetSTSCondition("", "", "", "", "", "") //	Policy设置，详情见oss文档

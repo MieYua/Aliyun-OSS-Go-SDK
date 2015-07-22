@@ -2,7 +2,7 @@
 ---
 
 ## How to Install ##
-* <strong>go get github.com/MieYua/Aliyun-OSS-Go-SDK/oss</strong>
+* `go get github.com/MieYua/Aliyun-OSS-Go-SDK/oss`
 
 ---
 

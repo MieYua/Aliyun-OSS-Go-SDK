@@ -7,6 +7,7 @@ package sts
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
@@ -85,6 +86,17 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 	} else {
 		b, _ := ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
+
+		if resp.StatusCode != 200 {
+			var errMap map[string]string
+			err = json.Unmarshal(b, &errMap)
+			if err != nil {
+				return
+			}
+			err = errors.New("get security token error! Code: " + errMap["Code"] + "; Message: " + errMap["Message"] + "; StatusCode: " + strconv.Itoa(resp.StatusCode))
+			return
+		}
+
 		err = json.Unmarshal(b, &securityTokenResponseJSON)
 		if err != nil {
 			return

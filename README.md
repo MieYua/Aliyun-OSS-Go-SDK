@@ -1,6 +1,16 @@
 ### This is Go(Golang) SDK for Aliyun OSS ###
 ---
 
+## How to Install ##
+* <strong>go get github.com/MieYua/Aliyun-OSS-Go-SDK/oss</strong>
+
+---
+
+## SDK Version ##
+* <strong>Ver. 4.1 (Released on 150722)</strong>
+
+---
+
 ## Golang Version ##
 * <strong>Golang 1.4</strong>
 
@@ -11,11 +21,6 @@
 
 ---
 
-## SDK Version ##
-* <strong>Ver. 4.0 (Released on 150717)</strong>
-
----
-
 ## Godoc ##
 * <http://godoc.org/github.com/MieYua/Aliyun-OSS-Go-SDK/oss>  
 
@@ -23,15 +28,18 @@
 
 ## SDK History ##
 
+### Ver. 4.1 (20150722) ###
+* <strong>Handle GetSecurityToken's error.(by zhaokai&rainsight)</strong>
+
 ### Ver. 4.0 (20150717) ###
-* <strong>Add all new consts(OSSHeader&STS);
+* Add all new consts(OSSHeader&STS);
 * Add UserProperty, SecurityToken, TempPrefix, TempDelimiter into tpyes.Client of Ver. 3.5;
 * Change common.DoRequest&model.bucket.BucketList to adapt all new STSTempClient's requests;
 * Add GetSecurityToken&SetSTSCondition of Ver. 3.5;
 * Add AppendObject of Ver. 3.5;
 * Add InitiateTempClient of Ver. 3.5;
 * New functions' examples can be found in oss_test.go;
-* Realize all methods of official OSS-API(20150710).</strong>
+* Realize all methods of official OSS-API(20150710).
 
 ### Ver. 3.5 (20150623) ###
 * Rename variables to easily understand(cutLength, startPoint, endPoint to chunkSize, start, end).(by topikachu)

@@ -93,7 +93,7 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 			if err != nil {
 				return
 			}
-			err = errors.New("get security token error! Code: " + errMap["Code"] + "; Message: " + errMap["Message"] + "; StatusCode: " + strconv.Itoa(resp.StatusCode))
+			err = errors.New("Get security token error! Code: " + errMap["Code"] + "; Message: " + errMap["Message"] + "; StatusCode: " + strconv.Itoa(resp.StatusCode))
 			return
 		}
 

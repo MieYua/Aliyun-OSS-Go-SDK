@@ -53,12 +53,14 @@ func TestGetSecurityToken(t *testing.T) {
 			condition := SetSTSCondition("", "", "", "", "", "")
 			strj, err := GetSecurityToken(ACCESSKEYID, ACCESSKEYSECRET, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
 			fmt.Println(err)
-			fmt.Println(strj.RequestId)                                             // 本次请求的Id
-			fmt.Println(strj.FederatedUser.FederatedUserId, strj.FederatedUser.Arn) // Bucket拥有者的信息
-			fmt.Println(strj.Credentials.AccessKeyId)                               // 	临时AccessKeyId
-			fmt.Println(strj.Credentials.AccessKeySecret)                           //	临时AccessKeySecret
-			fmt.Println(strj.Credentials.Expiration)                                //	令牌失效时间
-			fmt.Println(strj.Credentials.SecurityToken)                             //	临时令牌
+			if err == nil {
+				fmt.Println(strj.RequestId)                                             // 本次请求的Id
+				fmt.Println(strj.FederatedUser.FederatedUserId, strj.FederatedUser.Arn) // Bucket拥有者的信息
+				fmt.Println(strj.Credentials.AccessKeyId)                               // 	临时AccessKeyId
+				fmt.Println(strj.Credentials.AccessKeySecret)                           //	临时AccessKeySecret
+				fmt.Println(strj.Credentials.Expiration)                                //	令牌失效时间
+				fmt.Println(strj.Credentials.SecurityToken)                             //	临时令牌
+			}
 		}
 	})
 }

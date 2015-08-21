@@ -26,29 +26,9 @@ import (
  *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
  *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  */
-func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, allowedActions []string, allowedResources []string, effect string, condition types.Condition, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
+func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, policy *types.SecurityTokenJSON, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
 	reqUrl := "https://sts.aliyuncs.com"
 
-	policy := new(types.SecurityTokenJSON)
-	policy.Version = "1"
-	statement := types.Statement{}
-	if len(allowedActions) >= 1 {
-		statement.Action = allowedActions
-	}
-	if len(allowedResources) >= 1 {
-		statement.Resource = allowedResources
-	}
-	effectUpper := strings.ToUpper(effect)
-	if effectUpper == "DENY" {
-		statement.Effect = "Deny"
-	} else {
-		statement.Effect = "Allow"
-	}
-	emptyCondition := types.Condition{}
-	if condition != emptyCondition {
-		statement.Condition = condition
-	}
-	policy.Statement = append(policy.Statement, statement)
 	bs, _ := json.Marshal(policy)
 	policyUrl, _ := url.Parse(string(bs))
 	policyEncode := policyUrl.String()

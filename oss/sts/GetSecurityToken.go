@@ -8,7 +8,7 @@ package sts
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	// "fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"math/rand"
@@ -35,9 +35,6 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 	policyEncode = strings.Replace(policyEncode, "=", "%3D", -1)
 	policyEncode = strings.Replace(policyEncode, "&", "%26", -1)
 
-	postBody := "StsVersion=1&Name=" + username + "&DurationSeconds=" + strconv.Itoa(durationSeconds)
-	postBody = postBody + "&Policy=" + policyEncode + "&Action=GetFederationToken"
-
 	date := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 
 	//	用时间生成随机数
@@ -47,18 +44,27 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 		randNumber = -randNumber
 	}
 
-	postBody = postBody + "&Format=json&Version=2015-04-01&SignatureMethod=HMAC-SHA1&SignatureNonce=" + strconv.Itoa(randNumber) + "&SignatureVersion=1.0&AccessKeyId=" + accessKeyId + "&Timestamp=" + date + "&RegionId=" + regionId
-	postStr, _ := url.ParseQuery(postBody)
-	postEncode := postStr.Encode()
-	signature := STSStringToSign(accessKeySecret, percentEncode(postEncode))
-	postBody = postBody + "&Signature=" + signature
+	queryMap := url.Values{}
+	queryMap.Add("StsVersion", "1")
+	queryMap.Add("Name", username)
+	queryMap.Add("DurationSeconds", strconv.Itoa(durationSeconds))
+	queryMap.Add("Policy", string(bs))
+	queryMap.Add("Action", "GetFederationToken")
+	queryMap.Add("Format", "json")
+	queryMap.Add("Version", "2015-04-01")
+	queryMap.Add("SignatureMethod", "HMAC-SHA1")
+	queryMap.Add("SignatureNonce", strconv.Itoa(randNumber))
+	queryMap.Add("SignatureVersion", "1.0")
+	queryMap.Add("AccessKeyId", accessKeyId)
+	queryMap.Add("Timestamp", date)
+	queryMap.Add("RegionId", regionId)
 
-	postStr, _ = url.ParseQuery(postBody)
-	postEncode = postStr.Encode()
-	reqUrl = reqUrl + "/?" + postEncode
+	signature := STSStringToSign(accessKeySecret, percentEncode(queryMap.Encode()))
+	queryMap.Add("Signature", signature)
+	reqUrl = reqUrl + "/?" + queryMap.Encode()
 
 	req, _ := http.NewRequest("POST", reqUrl, nil)
-	fmt.Println(req)
+	// fmt.Println(req)
 	c := new(http.Client)
 	resp, err := c.Do(req)
 	if err != nil {

@@ -8,7 +8,7 @@ package sts
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	// "fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"math/rand"
@@ -26,37 +26,14 @@ import (
  *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
  *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  */
-func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, allowedActions []string, allowedResources []string, effect string, condition types.Condition, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
+func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, policy *types.SecurityTokenJSON, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
 	reqUrl := "https://sts.aliyuncs.com"
 
-	policy := new(types.SecurityTokenJSON)
-	policy.Version = "1"
-	statement := types.Statement{}
-	if len(allowedActions) >= 1 {
-		statement.Action = allowedActions
-	}
-	if len(allowedResources) >= 1 {
-		statement.Resource = allowedResources
-	}
-	effectUpper := strings.ToUpper(effect)
-	if effectUpper == "DENY" {
-		statement.Effect = "Deny"
-	} else {
-		statement.Effect = "Allow"
-	}
-	emptyCondition := types.Condition{}
-	if condition != emptyCondition {
-		statement.Condition = condition
-	}
-	policy.Statement = append(policy.Statement, statement)
 	bs, _ := json.Marshal(policy)
 	policyUrl, _ := url.Parse(string(bs))
 	policyEncode := policyUrl.String()
 	policyEncode = strings.Replace(policyEncode, "=", "%3D", -1)
 	policyEncode = strings.Replace(policyEncode, "&", "%26", -1)
-
-	postBody := "StsVersion=1&Name=" + username + "&DurationSeconds=" + strconv.Itoa(durationSeconds)
-	postBody = postBody + "&Policy=" + policyEncode + "&Action=GetFederationToken"
 
 	date := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 
@@ -67,18 +44,27 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 		randNumber = -randNumber
 	}
 
-	postBody = postBody + "&Format=json&Version=2015-04-01&SignatureMethod=HMAC-SHA1&SignatureNonce=" + strconv.Itoa(randNumber) + "&SignatureVersion=1.0&AccessKeyId=" + accessKeyId + "&Timestamp=" + date + "&RegionId=" + regionId
-	postStr, _ := url.ParseQuery(postBody)
-	postEncode := postStr.Encode()
-	signature := STSStringToSign(accessKeySecret, percentEncode(postEncode))
-	postBody = postBody + "&Signature=" + signature
+	queryMap := url.Values{}
+	queryMap.Add("StsVersion", "1")
+	queryMap.Add("Name", username)
+	queryMap.Add("DurationSeconds", strconv.Itoa(durationSeconds))
+	queryMap.Add("Policy", string(bs))
+	queryMap.Add("Action", "GetFederationToken")
+	queryMap.Add("Format", "json")
+	queryMap.Add("Version", "2015-04-01")
+	queryMap.Add("SignatureMethod", "HMAC-SHA1")
+	queryMap.Add("SignatureNonce", strconv.Itoa(randNumber))
+	queryMap.Add("SignatureVersion", "1.0")
+	queryMap.Add("AccessKeyId", accessKeyId)
+	queryMap.Add("Timestamp", date)
+	queryMap.Add("RegionId", regionId)
 
-	postStr, _ = url.ParseQuery(postBody)
-	postEncode = postStr.Encode()
-	reqUrl = reqUrl + "/?" + postEncode
+	signature := STSStringToSign(accessKeySecret, percentEncode(queryMap.Encode()))
+	queryMap.Add("Signature", signature)
+	reqUrl = reqUrl + "/?" + queryMap.Encode()
 
 	req, _ := http.NewRequest("POST", reqUrl, nil)
-	fmt.Println(req)
+	// fmt.Println(req)
 	c := new(http.Client)
 	resp, err := c.Do(req)
 	if err != nil {

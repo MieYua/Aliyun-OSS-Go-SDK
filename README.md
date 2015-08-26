@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 4.1 (Released on 150722)</strong>
+* <strong>Ver. 4.2 (Released on 150826)</strong>
 
 ---
 
@@ -28,8 +28,12 @@
 
 ## SDK History ##
 
+### Ver. 4.2 (20150826) ###
+* <strong>Consummate STSSecurityToken to support multiple statements;
+* Consummate the signature's function to fix some bugs.(by zhaokai&rainsight)</strong>
+
 ### Ver. 4.1 (20150722) ###
-* <strong>Handle GetSecurityToken's error.(by zhaokai&rainsight)</strong>
+* Handle GetSecurityToken's error.(by zhaokai&rainsight)
 
 ### Ver. 4.0 (20150717) ###
 * Add all new consts(OSSHeader&STS);

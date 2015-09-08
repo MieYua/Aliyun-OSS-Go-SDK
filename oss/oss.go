@@ -39,8 +39,8 @@ type Client struct {
 //	获得临时安全令牌（同一个用户名请在失效前再重新获取，不然容易返回空）。
 /*
  *	Example(oss_test.go-TestGetSecurityToken):
- *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, roleArn, roleSessionName, durationSeconds, policy, regionId)
- *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
+ *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, assumeRole)
+ *		assumeRole.DurationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  *	Please see its example in oss_test.go
  *	实例请见oss_test.go-TestGetSecurityToken。
  *	失效时间strj.Credentials.Expiration；

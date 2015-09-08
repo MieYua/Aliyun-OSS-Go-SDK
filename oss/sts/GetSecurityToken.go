@@ -25,8 +25,8 @@ import (
 //	获得临时安全令牌。
 /*
  *	Example:
- *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
- *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
+ *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, assumeRole)
+ *		assumeRole.DurationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  */
 func GetSecurityToken(accessKeyId, accessKeySecret string, assumeRole *types.AssumeRole) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
 	reqUrl := "https://sts.aliyuncs.com"

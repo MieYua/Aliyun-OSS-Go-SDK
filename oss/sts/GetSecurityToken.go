@@ -6,9 +6,11 @@
 package sts
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
-	// "fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	"io/ioutil"
 	"math/rand"
@@ -26,11 +28,17 @@ import (
  *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
  *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  */
-func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, policy *types.SecurityTokenJSON, regionId string) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
+func GetSecurityToken(accessKeyId, accessKeySecret string, assumeRole *types.AssumeRole) (securityTokenResponseJSON types.SecurityTokenResponseJSON, err error) {
 	reqUrl := "https://sts.aliyuncs.com"
 
-	bs, _ := json.Marshal(policy)
-	policyUrl, _ := url.Parse(string(bs))
+	bs, err := json.Marshal(assumeRole.Policy)
+	if err != nil {
+		return
+	}
+	policyUrl, err := url.Parse(string(bs))
+	if err != nil {
+		return
+	}
 	policyEncode := policyUrl.String()
 	policyEncode = strings.Replace(policyEncode, "=", "%3D", -1)
 	policyEncode = strings.Replace(policyEncode, "&", "%26", -1)
@@ -45,11 +53,12 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 	}
 
 	queryMap := url.Values{}
-	queryMap.Add("StsVersion", "1")
-	queryMap.Add("Name", username)
-	queryMap.Add("DurationSeconds", strconv.Itoa(durationSeconds))
+	queryMap.Add("Action", "AssumeRole")
+	queryMap.Add("RoleArn", assumeRole.RoleArn)
+	queryMap.Add("RoleSessionName", assumeRole.RoleSessionName)
+	queryMap.Add("DurationSeconds", strconv.Itoa(assumeRole.DurationSeconds))
 	queryMap.Add("Policy", string(bs))
-	queryMap.Add("Action", "GetFederationToken")
+
 	queryMap.Add("Format", "json")
 	queryMap.Add("Version", "2015-04-01")
 	queryMap.Add("SignatureMethod", "HMAC-SHA1")
@@ -57,44 +66,59 @@ func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSec
 	queryMap.Add("SignatureVersion", "1.0")
 	queryMap.Add("AccessKeyId", accessKeyId)
 	queryMap.Add("Timestamp", date)
-	queryMap.Add("RegionId", regionId)
 
-	signature := STSStringToSign(accessKeySecret, percentEncode(queryMap.Encode()))
+	signature := stsStringToSign(accessKeySecret, queryMap)
 	queryMap.Add("Signature", signature)
 	reqUrl = reqUrl + "/?" + queryMap.Encode()
-
-	req, _ := http.NewRequest("POST", reqUrl, nil)
-	// fmt.Println(req)
+	req, err := http.NewRequest("POST", reqUrl, nil)
+	if err != nil {
+		return
+	}
 	c := new(http.Client)
 	resp, err := c.Do(req)
 	if err != nil {
 		return
-	} else {
-		b, _ := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
+	}
 
-		if resp.StatusCode != 200 {
-			var errMap map[string]string
-			err = json.Unmarshal(b, &errMap)
-			if err != nil {
-				return
-			}
-			err = errors.New("Get security token error! Code: " + errMap["Code"] + "; Message: " + errMap["Message"] + "; StatusCode: " + strconv.Itoa(resp.StatusCode))
-			return
-		}
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
 
-		err = json.Unmarshal(b, &securityTokenResponseJSON)
+	if resp.StatusCode != 200 {
+		var errMap map[string]string
+		err = json.Unmarshal(b, &errMap)
 		if err != nil {
 			return
 		}
+		err = errors.New("Get security token error! Code: " + errMap["Code"] + "; Message: " + errMap["Message"] + "; StatusCode: " + strconv.Itoa(resp.StatusCode) + "; RequestUrl: " + reqUrl)
+		return
 	}
+
+	err = json.Unmarshal(b, &securityTokenResponseJSON)
+	if err != nil {
+		return
+	}
+
 	return
 }
 
 func percentEncode(str string) (pestr string) {
+	str = url.QueryEscape(str)
 	str = strings.Replace(str, "+", "%20", -1)
 	str = strings.Replace(str, "*", "%2A", -1)
 	str = strings.Replace(str, "%7E", "~", -1)
 	pestr = str
+	return
+}
+
+func stsStringToSign(accessKeySecret string, postBody url.Values) (signature string) {
+	signStr := "POST&%2F&" + percentEncode(postBody.Encode())
+
+	h := hmac.New(sha1.New, []byte(accessKeySecret+"&"))
+	h.Write([]byte(signStr))
+
+	signature = base64.StdEncoding.EncodeToString(h.Sum(nil))
 	return
 }

@@ -39,15 +39,15 @@ type Client struct {
 //	获得临时安全令牌（同一个用户名请在失效前再重新获取，不然容易返回空）。
 /*
  *	Example(oss_test.go-TestGetSecurityToken):
- *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
- *		durationSeconds: mainAccount:900-3600s/childAccount:900-129600s
+ *	strj, err := GetSecurityToken(accessKeyId, accessKeySecret, assumeRole)
+ *		assumeRole.DurationSeconds: mainAccount:900-3600s/childAccount:900-129600s
  *	Please see its example in oss_test.go
  *	实例请见oss_test.go-TestGetSecurityToken。
  *	失效时间strj.Credentials.Expiration；
  *	请自行按失效时间刷新。
  */
-func GetSecurityToken(accessKeyId, accessKeySecret, username string, durationSeconds int, allowedActions []string, allowedResources []string, effect string, condition types.Condition, regionId string) (strj types.SecurityTokenResponseJSON, err error) {
-	return sts.GetSecurityToken(accessKeyId, accessKeySecret, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
+func GetSecurityToken(accessKeyId, accessKeySecret string, assumeRole *types.AssumeRole) (strj types.SecurityTokenResponseJSON, err error) {
+	return sts.GetSecurityToken(accessKeyId, accessKeySecret, assumeRole)
 }
 
 // 	STS: SetSTSCondition.

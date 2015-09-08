@@ -8,6 +8,7 @@ package oss
 import (
 	"fmt"
 	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/consts"
+	"github.com/MieYua/Aliyun-OSS-Go-SDK/oss/types"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
@@ -40,18 +41,35 @@ func TestGetSecurityToken(t *testing.T) {
 		fmt.Println("")
 		c := InitiateClient(ENDPOINT, ACCESSKEYID, ACCESSKEYSECRET)
 		lambr, err := c.GetServiceInfo()
+		fmt.Println("bucketOwner:", lambr.Owner.ID)
 		if err != nil {
 			fmt.Println(lambr.Owner.ID, err)
 		} else {
-			bucketOwner := lambr.Owner.ID
-			username := "xxxxxxx"
+			bucketOwner := BUCKETOWNER
+			roleSessionName := "xxxxxxx"
 			durationSeconds := 1800
 			allowedActions := []string{consts.STS_ACTION_OBJECT_PUTOBJECT}
 			allowedResources := []string{"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME}
 			effect := "Allow"
-			regionId := "cn-hangzhou"
 			condition := SetSTSCondition("", "", "", "", "", "")
-			strj, err := GetSecurityToken(ACCESSKEYID, ACCESSKEYSECRET, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
+
+			statements := make([]types.Statement, 0, 1)
+			statements = append(statements,
+				types.Statement{
+					Action:    allowedActions,
+					Resource:  allowedResources,
+					Effect:    effect,
+					Condition: condition,
+				})
+			strj, err := GetSecurityToken(ACCESSKEYID, ACCESSKEYSECRET, &types.AssumeRole{
+				RoleArn:         "acs:ram::" + bucketOwner + ":role/" + ROLE,
+				RoleSessionName: roleSessionName,
+				Policy: types.SecurityTokenJSON{
+					Version:   "1",
+					Statement: statements,
+				},
+				DurationSeconds: durationSeconds,
+			})
 			fmt.Println(err)
 			if err == nil {
 				fmt.Println(strj.RequestId)                                             // 本次请求的Id
@@ -76,23 +94,39 @@ func TestInitiateDifferentClient(t *testing.T) {
 		}
 		fmt.Println("临时获得Client服务")
 		if err == nil {
-			bucketOwner := lambr.Owner.ID
-			username := "xxxxxxxxxx"
+			bucketOwner := BUCKETOWNER
+			roleSessionName := "xxxxxxxxxx"
 			durationSeconds := 3600                                                                            //	有效时长
 			allowedActions := []string{consts.STS_ACTION_BUCKET_GETBUCKET, consts.STS_ACTION_OBJECT_PUTOBJECT} //	允许的操作动作
 			allowedResources := []string{"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME + "/*"}             //	允许操作的bucket
 			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME			---->bucket操作资源
 			//	"acs:oss:*:" + bucketOwner + ":" + TESTBUCKETNAME + "/*"	---->bucket下object操作资源（支持通配符*）
 			effect := "Allow"
-			regionId := "cn-hangzhou"                            //	节点，形式如例子
 			condition := SetSTSCondition("", "", "", "", "", "") //	Policy设置，详情见oss文档
-			strj, err := GetSecurityToken(ACCESSKEYID, ACCESSKEYSECRET, username, durationSeconds, allowedActions, allowedResources, effect, condition, regionId)
+
+			statements := make([]types.Statement, 0, 1)
+			statements = append(statements,
+				types.Statement{
+					Action:    allowedActions,
+					Resource:  allowedResources,
+					Effect:    effect,
+					Condition: condition,
+				})
+			strj, err := GetSecurityToken(ACCESSKEYID, ACCESSKEYSECRET, &types.AssumeRole{
+				RoleArn:         "acs:ram::" + BUCKETOWNER + ":role/" + ROLE,
+				RoleSessionName: roleSessionName,
+				Policy: types.SecurityTokenJSON{
+					Version:   "1",
+					Statement: statements,
+				},
+				DurationSeconds: durationSeconds,
+			})
 			if err == nil {
 				tempExpiration := strj.Credentials.Expiration           //	令牌失效时间（请自行重新获取）
 				tempAccessKeyId := strj.Credentials.AccessKeyId         // 	临时AccessKeyId
 				tempAccessKeySecret := strj.Credentials.AccessKeySecret //	临时AccessKeySecret
 				securityToken := strj.Credentials.SecurityToken         //	临时令牌
-				cTempUser := InitiateTempClient(consts.ENDPOINT_HANGZHOU, tempAccessKeyId, tempAccessKeySecret, securityToken, condition.StringEquals.Prefix, condition.StringEquals.Delimiter)
+				cTempUser := InitiateTempClient(ENDPOINT, tempAccessKeyId, tempAccessKeySecret, securityToken, condition.StringEquals.Prefix, condition.StringEquals.Delimiter)
 				//_, err := cTempUser.GetBucketInfo(TESTBUCKETNAME, "", "", "", "100")
 				err := cTempUser.CreateObject(TESTBUCKETNAME+"/"+TESTFILENAME, TESTFILEPATH)
 				if err == nil {

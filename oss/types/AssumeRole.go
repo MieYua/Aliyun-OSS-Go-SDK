@@ -1,8 +1,8 @@
 package types
 
 type AssumeRole struct {
-	RoleArn         string `xml:""`
-	RoleSessionName string `xml:""`
+	RoleArn         string
+	RoleSessionName string
 	Policy          SecurityTokenJSON
 	DurationSeconds int
 }

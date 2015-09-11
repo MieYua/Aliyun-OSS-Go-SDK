@@ -30,7 +30,7 @@
 
 ### Ver. 4.3 (20150911) ###
 * <strong>Change STSSecurityToken's request to AssumeRole;
-* Consummate the signature's function to fix some bugs
+* Consummate the signature's function to fix some bugs;
 * Update files and test's files.(by zhaokai&rainsight)</strong>
 
 ### Ver. 4.2 (20150826) ###

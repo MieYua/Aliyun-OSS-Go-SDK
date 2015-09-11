@@ -7,7 +7,7 @@
 ---
 
 ## SDK Version ##
-* <strong>Ver. 4.2 (Released on 150826)</strong>
+* <strong>Ver. 4.3 (Released on 150911)</strong>
 
 ---
 
@@ -28,9 +28,14 @@
 
 ## SDK History ##
 
+### Ver. 4.3 (20150911) ###
+* <strong>Change STSSecurityToken's request to AssumeRole;
+* Consummate the signature's function to fix some bugs
+* Update files and test's files.(by zhaokai&rainsight)</strong>
+
 ### Ver. 4.2 (20150826) ###
-* <strong>Consummate STSSecurityToken to support multiple statements;
-* Consummate the signature's function to fix some bugs.(by zhaokai&rainsight)</strong>
+* Consummate STSSecurityToken to support multiple statements;
+* Consummate the signature's function to fix some bugs.(by zhaokai&rainsight)
 
 ### Ver. 4.1 (20150722) ###
 * Handle GetSecurityToken's error.(by zhaokai&rainsight)
